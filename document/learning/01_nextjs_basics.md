@@ -1,7 +1,7 @@
 # 学習メモ — Next.js 入門（第1回）
 
 > このフォルダ（`document/learning/`）は、Next.js などの技術学習用メモです。  
-> サイトの仕様書は `document/hono_site_spec.md` を参照してください。  
+> サイトの仕様書は `hono_site_spec.md`（プロジェクト直下）を参照してください。  
 > 最終更新: 2026-09-12
 
 ---

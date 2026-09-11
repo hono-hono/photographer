@@ -10,4 +10,4 @@ Next.js や Web 制作の学習記録を置くフォルダです。
 
 ## 関連ドキュメント
 
-- サイト仕様書: [../hono_site_spec.md](../hono_site_spec.md)
+- サイト仕様書: [../../hono_site_spec.md](../../hono_site_spec.md)
