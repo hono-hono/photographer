@@ -1,0 +1,135 @@
+/* グローバルスタイル — ミニマルで写真を主役にするデザイン */
+
+:root {
+  --color-bg: #f8f7f5;
+  --color-bg-pure: #ffffff;
+  --color-text: #1a1a1a;
+  --color-text-muted: #5a5a5a;
+  --color-accent: #8a8a8a;
+  --color-border: #e8e6e3;
+
+  --font-serif: var(--font-cormorant), "Times New Roman", serif;
+  --font-sans: var(--font-noto-sans), "Hiragino Sans", "Hiragino Kaku Gothic ProN",
+    "Yu Gothic", sans-serif;
+
+  --spacing-section: clamp(4rem, 10vw, 8rem);
+  --spacing-content: clamp(1.25rem, 4vw, 2.5rem);
+  --max-width: 1200px;
+  --max-width-narrow: 720px;
+
+  --transition-subtle: 0.3s ease;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--font-sans);
+  font-size: 0.9375rem;
+  font-weight: 300;
+  line-height: 1.8;
+  color: var(--color-text);
+  background-color: var(--color-bg);
+}
+
+img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+/* ユーティリティ */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.container {
+  width: 100%;
+  max-width: var(--max-width);
+  margin-inline: auto;
+  padding-inline: var(--spacing-content);
+}
+
+.container--narrow {
+  max-width: var(--max-width-narrow);
+}
+
+/* セクション共通 */
+.section {
+  padding-block: var(--spacing-section);
+}
+
+.section__label {
+  font-family: var(--font-serif);
+  font-size: 0.75rem;
+  font-weight: 400;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+  margin-bottom: 1.5rem;
+}
+
+.section__title {
+  font-family: var(--font-serif);
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-weight: 300;
+  letter-spacing: 0.05em;
+  line-height: 1.4;
+  color: var(--color-text);
+}
+
+/* リンク — 控えめなホバー */
+.link-subtle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8125rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  transition: color var(--transition-subtle);
+}
+
+.link-subtle:hover {
+  color: var(--color-text);
+}
+
+.link-subtle::after {
+  content: "→";
+  transition: transform var(--transition-subtle);
+}
+
+.link-subtle:hover::after {
+  transform: translateX(4px);
+}
