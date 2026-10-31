@@ -157,7 +157,21 @@ npm run build
 
 ## サイト構成
 
-- `/` — Home（実装済み）
-- `/gallery` — Gallery（未実装）
-- `/profile` — Profile（未実装）
-- `/contact` — Contact（未実装）
+3ページ構成です（2026-10 確定）。Profile と Contact はトップの中に置きます。
+
+- `/` — トップ（MV → すべての写真を見る → Profile `#profile` → Contact `#contact`）
+- `/gallery?category=all|works|family|anniversary` — Gallery（タブで絞り込み）
+- `/gallery/[slug]` — 作品詳細（写真だけを大きく表示）
+
+作品・実績・プロフィール文は CMS（Kuroco）で管理する予定です。
+
+## ドキュメント
+
+設計・仕様は `document/` にあります。
+
+| ファイル | 内容 |
+|---|---|
+| [document/hono_site_spec.md](./document/hono_site_spec.md) | ページ仕様書 |
+| [document/hono_design_brief.md](./document/hono_design_brief.md) | デザイン依頼書 |
+| [document/hono_component_design.md](./document/hono_component_design.md) | コンポーネント設計書（Next.js × Kuroco） |
+| [document/learning/](./document/learning/) | 学習メモ |
