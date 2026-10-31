@@ -174,4 +174,5 @@ npm run build
 | [document/hono_site_spec.md](./document/hono_site_spec.md) | ページ仕様書 |
 | [document/hono_design_brief.md](./document/hono_design_brief.md) | デザイン依頼書 |
 | [document/hono_component_design.md](./document/hono_component_design.md) | コンポーネント設計書（Next.js × Kuroco） |
+| [document/launch_checklist.md](./document/launch_checklist.md) | 公開までの手順 |
 | [document/learning/](./document/learning/) | 学習メモ |
