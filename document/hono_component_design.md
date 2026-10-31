@@ -4,7 +4,7 @@
 更新日: 2026-10-31（CMSに Kuroco を採用し、データ・お問い合わせ・公開の流れを改訂）
 ステータス: 第2版。実装に入る前の設計図
 置き場所: GitHub `hono-hono/photographer` の `document/`
-前提資料: `claude/hono_design_brief.md`（デザイン依頼書・最優先）、`claude/hono_site_spec.md`（ページ仕様書）、`要件定義`
+前提資料: `document/hono_design_brief.md`（デザイン依頼書・最優先）、`document/hono_site_spec.md`（ページ仕様書）、claude.ai プロジェクト内の `要件定義`
 
 ---
 
