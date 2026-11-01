@@ -1,0 +1,182 @@
+{
+  "works": [
+    {
+      "slug": "dummy-works-01",
+      "category": "works",
+      "file": "dummy-works-01.jpg",
+      "width": 1600,
+      "height": 1067,
+      "alt": "ダミー写真（横位置）"
+    },
+    {
+      "slug": "dummy-works-02",
+      "category": "works",
+      "file": "dummy-works-02.jpg",
+      "width": 1067,
+      "height": 1600,
+      "alt": "ダミー写真（縦位置）"
+    },
+    {
+      "slug": "dummy-works-03",
+      "category": "works",
+      "file": "dummy-works-03.jpg",
+      "width": 1280,
+      "height": 1600,
+      "alt": "ダミー写真（縦位置）"
+    },
+    {
+      "slug": "dummy-works-04",
+      "category": "works",
+      "file": "dummy-works-04.jpg",
+      "width": 1600,
+      "height": 900,
+      "alt": "ダミー写真（横長）"
+    },
+    {
+      "slug": "dummy-works-05",
+      "category": "works",
+      "file": "dummy-works-05.jpg",
+      "width": 1600,
+      "height": 1600,
+      "alt": "ダミー写真（正方形）"
+    },
+    {
+      "slug": "dummy-works-06",
+      "category": "works",
+      "file": "dummy-works-06.jpg",
+      "width": 1600,
+      "height": 1067,
+      "alt": "ダミー写真（横位置）"
+    },
+    {
+      "slug": "dummy-works-07",
+      "category": "works",
+      "file": "dummy-works-07.jpg",
+      "width": 1067,
+      "height": 1600,
+      "alt": "ダミー写真（縦位置）"
+    },
+    {
+      "slug": "dummy-works-08",
+      "category": "works",
+      "file": "dummy-works-08.jpg",
+      "width": 1600,
+      "height": 1200,
+      "alt": "ダミー写真（横位置）"
+    },
+    {
+      "slug": "dummy-works-09",
+      "category": "works",
+      "file": "dummy-works-09.jpg",
+      "width": 1200,
+      "height": 1600,
+      "alt": "ダミー写真（縦位置）"
+    },
+    {
+      "slug": "dummy-works-10",
+      "category": "works",
+      "file": "dummy-works-10.jpg",
+      "width": 1600,
+      "height": 1067,
+      "alt": "ダミー写真（横位置）"
+    },
+    {
+      "slug": "dummy-works-11",
+      "category": "works",
+      "file": "dummy-works-11.jpg",
+      "width": 1600,
+      "height": 1280,
+      "alt": "ダミー写真（横位置）"
+    },
+    {
+      "slug": "dummy-works-12",
+      "category": "works",
+      "file": "dummy-works-12.jpg",
+      "width": 1067,
+      "height": 1600,
+      "alt": "ダミー写真（縦位置）"
+    },
+    {
+      "slug": "dummy-family-01",
+      "category": "family",
+      "file": "dummy-family-01.jpg",
+      "width": 1600,
+      "height": 1067,
+      "alt": "ダミー写真（横位置）"
+    },
+    {
+      "slug": "dummy-family-02",
+      "category": "family",
+      "file": "dummy-family-02.jpg",
+      "width": 1280,
+      "height": 1600,
+      "alt": "ダミー写真（縦位置）"
+    },
+    {
+      "slug": "dummy-family-03",
+      "category": "family",
+      "file": "dummy-family-03.jpg",
+      "width": 1600,
+      "height": 1600,
+      "alt": "ダミー写真（正方形）"
+    },
+    {
+      "slug": "dummy-family-04",
+      "category": "family",
+      "file": "dummy-family-04.jpg",
+      "width": 1600,
+      "height": 1067,
+      "alt": "ダミー写真（横位置）"
+    },
+    {
+      "slug": "dummy-anniversary-01",
+      "category": "anniversary",
+      "file": "dummy-anniversary-01.jpg",
+      "width": 1067,
+      "height": 1600,
+      "alt": "ダミー写真（縦位置）"
+    },
+    {
+      "slug": "dummy-anniversary-02",
+      "category": "anniversary",
+      "file": "dummy-anniversary-02.jpg",
+      "width": 1600,
+      "height": 1067,
+      "alt": "ダミー写真（横位置）"
+    },
+    {
+      "slug": "dummy-anniversary-03",
+      "category": "anniversary",
+      "file": "dummy-anniversary-03.jpg",
+      "width": 1600,
+      "height": 900,
+      "alt": "ダミー写真（横長）"
+    },
+    {
+      "slug": "dummy-anniversary-04",
+      "category": "anniversary",
+      "file": "dummy-anniversary-04.jpg",
+      "width": 1280,
+      "height": 1600,
+      "alt": "ダミー写真（縦位置）"
+    }
+  ],
+  "mainVisual": [
+    "dummy-works-01",
+    "dummy-works-02",
+    "dummy-works-04",
+    "dummy-works-03",
+    "dummy-family-01",
+    "dummy-works-07",
+    "dummy-works-08",
+    "dummy-anniversary-01",
+    "dummy-works-10",
+    "dummy-works-05"
+  ],
+  "portrait": {
+    "file": "dummy-portrait.jpg",
+    "width": 1067,
+    "height": 1600,
+    "alt": "ダミーのポートレート"
+  }
+}
