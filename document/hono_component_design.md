@@ -204,6 +204,20 @@ Kuroco の API は `https://{サイトキー}.g.kuroco.app/rcms-api/{API番号}/
 - ビルド用APIにトークンを付けるのは、**公開前の作品や非公開の作品を外部から読まれないようにする**ため。トークンは GitHub Actions の Secrets にだけ置き、ブラウザには出さない
 - 公開用APIには、Kuroco の設定で「受け付ける送信元（CORS）」にサイトのドメインだけを登録し、流量制限（例: 1分に数回）を付ける
 
+**作成済みの設定（2026-11-01）**
+
+| API | API ID | 認証 | エンドポイント | 中身 |
+|---|---|---|---|---|
+| hono build | 2 | 静的トークン | `GET /rcms-api/2/works` | 作品（定義 7）を最大500件、topics_id の昇順 |
+| 〃 | 〃 | 〃 | `GET /rcms-api/2/achievements` | 実績（定義 8）を最大100件、topics_id の昇順 |
+| 〃 | 〃 | 〃 | `GET /rcms-api/2/profile` | プロフィール（定義 9）を1件 |
+| hono contact | 3 | なし | `POST /rcms-api/3/contact` | フォーム ID 3 に送信。1時間に10回まで |
+
+- 呼び出し先の例: `https://hono-portfolio.g.kuroco.app/rcms-api/2/works`（ヘッダー `X-RCMS-API-ACCESS-TOKEN` にトークン）
+- hono contact の受け付ける送信元（CORS）は `https://hono-hono.github.io` と `http://localhost:3000`、メソッドは POST と OPTIONS
+- フォーム ID 3「お問い合わせ」: 項目は `name`（お名前）・`email`（メールアドレス）・`message`（お問い合わせ内容、3000字まで）、すべて必須。`category` は非表示。通知は photographer.hono@gmail.com に全項目つき、自動返信あり
+- 既存の API 1「Default」とフォーム 1「Default」は使わない（変更もしていない）
+
 ---
 
 ## 5. サイト側のデータの型
