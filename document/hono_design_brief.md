@@ -11,7 +11,8 @@
 - ワイヤーフレーム(最新版): https://claude.ai/artifact/Aoutga7kwDK1XBunGb23KZ
 - ムードボード: claude.ai プロジェクト内 `hono_moodboard.html`
 - 要件定義: claude.ai プロジェクト内 `要件定義`
-- Figmaファイル(基盤のみ作成済み): https://www.figma.com/design/tRk9fK0LeLHLS0ErF5j1Bj (fileKey: tRk9fK0LeLHLS0ErF5j1Bj)
+- デザイン(初版、Claude のデザイン): https://claude.ai/artifact/M4Vv8op5XW2DA5vk5YpN8W
+- Figmaファイル(基盤のみ作成済み。デザインは Claude のデザインで作ることにしたため現在は使っていない): https://www.figma.com/design/tRk9fK0LeLHLS0ErF5j1Bj (fileKey: tRk9fK0LeLHLS0ErF5j1Bj)
 
 ---
 
