@@ -3,15 +3,24 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "content": "node --env-file-if-exists=.env.local --import tsx scripts/fetch-content.ts",
+    "predev": "npm run content",
     "dev": "next dev",
+    "prebuild": "npm run content",
     "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
+    "start": "npx serve out",
+    "lint": "next lint",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "format": "prettier --write ."
   },
   "dependencies": {
+    "@fontsource/noto-sans-jp": "^5.3.1",
+    "@fontsource/noto-serif-jp": "^5.3.1",
     "next": "^15.1.0",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "server-only": "^0.0.1"
   },
   "devDependencies": {
     "@types/node": "^22.10.0",
@@ -19,6 +28,13 @@
     "@types/react-dom": "^19.0.0",
     "eslint": "^9.16.0",
     "eslint-config-next": "^15.1.0",
-    "typescript": "^5.7.0"
+    "prettier": "^3.9.10",
+    "sharp": "^0.35.5",
+    "tsx": "^4.23.15",
+    "typescript": "^5.7.0",
+    "vitest": "^5.0.5"
+  },
+  "engines": {
+    "node": ">=22"
   }
 }

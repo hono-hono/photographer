@@ -1,7 +1,7 @@
 # hono ポートフォリオサイト — コンポーネント設計書（Next.js × Kuroco）
 
 作成日: 2026-10-31
-更新日: 2026-11-01（ステップ1の決定事項、Kuroco のコンテンツ定義の作成結果を反映）
+更新日: 2026-11-01（ステップ1の決定事項、Kuroco のコンテンツ定義と API の作成結果、実装で変えた点を反映）
 ステータス: 第2版。実装に入る前の設計図
 置き場所: GitHub `hono-hono/photographer` の `document/`
 前提資料: `document/hono_design_brief.md`（デザイン依頼書・最優先）、`document/hono_site_spec.md`（ページ仕様書）、claude.ai プロジェクト内の `要件定義`
@@ -43,7 +43,7 @@
 | CMS | **Kuroco** | 国産で管理画面が日本語。無料枠があり、フォーム機能と GitHub Actions 連携を標準で持つ |
 | 公開方法 | 静的書き出し → GitHub Pages | 無料。サーバー不要なので壊れにくい |
 | スタイル | CSS Modules + CSS変数（デザイントークン） | 追加のライブラリ不要。Figmaの変数名とそのまま対応させられる |
-| フォント | `next/font/google`（Noto Serif JP / Noto Sans JP、400・500のみ） | サイト自身から配信でき、表示のちらつきを防げる |
+| フォント | `@fontsource/noto-serif-jp`（400）・`@fontsource/noto-sans-jp`（400・500） | サイト自身から配信できる。ビルド時に Google へ取りに行かないので、通信の制限がある環境でもビルドが止まらない（実装時に `next/font/google` から変更） |
 | 画像 | ビルド時に Kuroco から取得 → 縮小してサイトに同梱 | 寸法を自動で取得でき、閲覧時に Kuroco の転送量を使わない（→ 7章） |
 | お問い合わせ | Kuroco フォーム（InquiryForm）API | 静的サイトでも送信でき、受信・通知メールを Kuroco で管理できる |
 | テスト | Vitest（計算・変換ロジックのみ） | 並べ方・前後移動・Kurocoデータの変換は、壊れると気づきにくい |
@@ -97,14 +97,16 @@ src/
    └─ globals.css                … リセット、基本の文字組み
 
 scripts/
-└─ fetch-images.ts               … ビルド前に Kuroco の写真を取得・縮小・寸法取得
+├─ fetch-content.ts              … ビルド前に Kuroco からデータと写真を取得・縮小・寸法取得し、.content/content.json に書き出す
+├─ dummy-content.ts              … トークンがないとき（手元での確認）に使うダミーのデータ
+└─ make-brand-images.mjs         … 共有用の画像とアイコンを作り直す
 ```
 
 **分け方のルール**
 - `components/` … 2か所以上で使う、またはページに依存しない部品
 - `features/` … 1つのページ専用の部品。そのページを消すときはフォルダごと消せる
 - `lib/kuroco/` … **Kuroco に関するコードはここだけ。** ページや部品は Kuroco の存在を知らない
-- `lib/content.ts` … ページがデータを受け取る唯一の窓口
+- `lib/content.ts` … ページがデータを受け取る唯一の窓口。中身は `scripts/fetch-content.ts` が書き出した `.content/content.json` を読むだけ（Kuroco への問い合わせはビルド1回につき1回）
 
 > 💡 **補足：Kuroco を `lib/kuroco/` に閉じ込める理由**
 > 部品が Kuroco のデータ形式に直接依存すると、Kuroco 側の項目名を変えただけで画面のあちこちを直すことになります。変換（`mappers.ts`）を1か所に置けば、変更はそこだけで済みます。将来 CMS を乗り換える場合も、`lib/kuroco/` を差し替えるだけです。
@@ -432,11 +434,11 @@ gallery/[slug]/page.tsx       ← getWorks()（generateStaticParams でも使う
 
 **方針: 写真の原本は Kuroco に置き、サイトにはビルド時に縮小したものを同梱する。**
 
-**手順（`scripts/fetch-images.ts`、ビルドの直前に自動で実行）**
+**手順（`scripts/fetch-content.ts`、`npm run build` / `npm run dev` の直前に自動で実行）**
 1. Kuroco API から作品とプロフィールの一覧を取得する
 2. 写真を1枚ずつダウンロードし、長辺2400px・JPEG品質80前後に縮小する（`sharp` を使用）
 3. 縮小後の幅と高さを読み取り、データに付け加える
-4. `public/photos/{スラッグ}.jpg` に保存する
+4. `public/photos/works/{スラッグ}.jpg`（ポートレートは `public/photos/profile/portrait.jpg`）に保存する。URL の末尾に `?v=…` を付け、写真を差し替えたときに古い画像が表示され続けないようにする
 5. 前回のビルドから変わっていない写真は処理を飛ばす（GitHub Actions のキャッシュを使用）
 
 - `next.config.ts` は `images.unoptimized: true`（静的書き出しでは Next.js の自動最適化が使えないため）
@@ -504,7 +506,7 @@ Figmaの変数（`hono/Color`、`hono/Space`）と名前を対応させる。
 
 **手順（Kuroco 側の設定）**
 1. Kuroco の［外部システム連携］で GitHub と連携する（GitHub のトークンとリポジトリを登録）
-2. 「作品」「実績」「プロフィール」の更新をきっかけに、GitHub Actions へビルドの依頼が送られるよう設定する
+2. 「作品」「実績」「プロフィール」の更新をきっかけに、GitHub Actions へビルドの依頼が送られるよう設定する（`repository_dispatch`、イベント名は **`kuroco_update`**）
 3. 管理画面で作品を保存 → 数分後にサイトへ反映される
 
 > 💡 **補足：反映までの時間**
@@ -534,7 +536,7 @@ Figmaの変数（`hono/Color`、`hono/Space`）と名前を対応させる。
 
 1. Kuroco のアカウント作成、コンテンツ定義（作品・実績・プロフィール）、仮の作品を5〜10件登録
 2. Next.js プロジェクト作成、ESLint / Prettier、`tokens.css`、フォント、`layout.tsx`
-3. `lib/kuroco/` と `scripts/fetch-images.ts`（データ取得・変換・画像の縮小）＋テスト
+3. `lib/kuroco/` と `scripts/fetch-content.ts`（データ取得・変換・画像の縮小）＋テスト
 4. `JustifiedRows` / `PhotoTile` → Gallery を表示
 5. `GalleryTabs`（絞り込み・URL連動・キーボード操作）
 6. `PhotoViewer` → 作品詳細 → `Lightbox` → MV
@@ -548,6 +550,19 @@ Figmaの変数（`hono/Color`、`hono/Space`）と名前を対応させる。
 
 ---
 
+## 12.5 実装メモ（2026-11-01、ステップ5）
+
+- **トークンがないときはダミーで動く。** 手元（`npm run dev`）では `dummy-photos/` を使う。GitHub Actions では `KUROCO_REQUIRED=true` にしてあり、トークンがなければビルドを止める（ダミーのまま公開されるのを防ぐ）
+- **ビルドを止める条件**: スラッグの空欄・形式違い・重複、カテゴリが3種類以外、代替テキストの空欄、写真の未登録、MVがちょうど10件でない、MVの順番の重複、プロフィールの欠け。理由は Actions のログに日本語で出る
+- **書き出しは `trailingSlash: true`**（`/gallery/` を `gallery/index.html` として書き出す）。GitHub Pages でフォルダとファイルの名前がぶつからないようにするため
+- **Gallery の戻り方**: 写真を押したときの場所（URL とスクロール位置）を覚え、作品詳細の「← Gallery」はブラウザの戻ると同じ動きにした。ブラウザの戻るで帰ったときだけスクロール位置を戻す（`src/lib/navigation.ts`）
+- **拡大表示の閉じ方**: 「✕ 閉じる」、Esc、写真とボタン以外の場所を押す。閉じると押した写真にフォーカスが戻り、スクロール位置もそのまま
+- **お問い合わせの送信**: Kuroco の項目名は `name`・`email`・`body`（お問い合わせ内容）。Kuroco が返す入力エラーは、該当する項目の下に表示する。送信が多すぎるとき（429）と通信の失敗は、フォームの下に文章で伝える
+- **共有用の画像とアイコン**: `src/app/opengraph-image.png`（1200×630）・`icon.png`・`apple-icon.png`。作品詳細の共有画像は、その作品の写真
+- 動作は Playwright で PC（1440px）と SP（390px）を確認済み（タブの矢印キー操作・URL連動、前後移動、戻ったときのタブとスクロール位置、拡大表示の開閉とフォーカス、SPメニュー、フォームの入力チェックと送信結果）
+
+---
+
 ## 13. この設計で新たに決めたいこと
 
 - [x] リポジトリ: `hono-hono/photographer`（公開URLは `https://hono-hono.github.io/photographer/`。`basePath` は既存の `deploy.yml` で `/photographer` に設定済み）
@@ -555,6 +570,8 @@ Figmaの変数（`hono/Color`、`hono/Space`）と名前を対応させる。
 - [x] 作品のスラッグ → 場所名-連番（例: `shimotsui-line-01`。英小文字・数字・ハイフンのみ、連番は2桁）
 - [x] 拡大表示 → 重ね表示
 - [ ] Gallery の行の目安（PC 約4.0 / SP 約2.0）を実際の写真で確認して調整
-- [ ] Web用写真の縮小サイズ（案: 長辺2400px）
+- [x] Web用写真の縮小サイズ → 長辺2400px・JPEG品質80（`scripts/fetch-content.ts` の `LONG_EDGE` / `QUALITY`）
 - [x] お問い合わせの自動返信メールの文面 → 仕様書 5.5
-- [ ] Kuroco 管理画面での確認事項: 一覧の表示順をAPIで取得できるか、画像拡張項目の返り値の形、GitHub連携の設定画面の項目（実装開始時に Swagger UI で確認）
+- [x] 画像拡張項目の返り値の形 → `{ id, url, url_org, desc }`（OpenAPI で確認。`url_org` を使う）
+- [ ] Kuroco の GitHub 連携の設定画面の項目（ステップ6で確認）
+- [ ] 一覧の表示順（管理画面での並べ替え）を使うか。今は登録順（topics_id の昇順）

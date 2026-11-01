@@ -1,0 +1,104 @@
+.section {
+  margin-top: var(--section-gap);
+}
+
+/* PC: 左にポートレート、右に見出しと文章 */
+.layout {
+  display: grid;
+  grid-template-columns: minmax(280px, 400px) minmax(0, 720px);
+  grid-template-areas:
+    "portrait heading"
+    "portrait body";
+  grid-template-rows: auto 1fr;
+  column-gap: 80px;
+  align-items: start;
+}
+
+.heading {
+  grid-area: heading;
+}
+
+.portrait {
+  grid-area: portrait;
+}
+
+.portraitImg {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
+  background: var(--color-tile);
+}
+
+.body {
+  grid-area: body;
+  padding-top: 40px;
+}
+
+.lead {
+  font-family: var(--font-serif);
+  font-size: 18px;
+  line-height: 2;
+  letter-spacing: 0.04em;
+}
+
+.subheading {
+  margin: 48px 0 12px;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.6;
+  letter-spacing: 0.08em;
+}
+
+.achievementsHeading {
+  margin: 56px 0 24px;
+}
+
+.text {
+  font-size: 14px;
+  line-height: 1.9;
+}
+
+@media (max-width: 1023px) and (min-width: 768px) {
+  .layout {
+    column-gap: 48px;
+    grid-template-columns: minmax(220px, 320px) minmax(0, 1fr);
+  }
+}
+
+/* SP: 見出し → 横長のポートレート → 文章 */
+@media (max-width: 767px) {
+  .layout {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "heading"
+      "portrait"
+      "body";
+    grid-template-rows: auto;
+  }
+
+  .portrait {
+    margin-top: 24px;
+  }
+
+  .portraitImg {
+    aspect-ratio: 3 / 2;
+    object-position: center 30%;
+  }
+
+  .body {
+    padding-top: 32px;
+  }
+
+  .lead {
+    font-size: 17px;
+  }
+
+  .subheading {
+    margin-top: 40px;
+  }
+
+  .achievementsHeading {
+    margin: 48px 0 20px;
+  }
+}

@@ -1,0 +1,13 @@
+.heading {
+  font-family: var(--font-serif);
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: 0.12em;
+}
+
+@media (max-width: 767px) {
+  .heading {
+    font-size: 22px;
+  }
+}

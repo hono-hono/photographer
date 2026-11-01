@@ -1,0 +1,50 @@
+.list {
+  display: flex;
+  gap: 40px;
+}
+
+.link {
+  position: relative;
+  display: inline-block;
+  padding: 12px 0 4px;
+  font-size: 13px;
+  line-height: 1.4;
+  letter-spacing: 0.06em;
+  color: var(--color-ink-soft);
+  text-decoration: none;
+  transition: color 0.3s var(--ease);
+}
+
+/* 下線は左から右へ伸びる（一方向の動きだけ） */
+.link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: var(--color-ink);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.4s var(--ease);
+}
+
+.link[aria-current] {
+  color: var(--color-ink);
+}
+
+.link[aria-current]::after {
+  transform: scaleX(1);
+}
+
+@media (hover: hover) {
+  .link:hover {
+    color: var(--color-ink);
+  }
+}
+
+@media (max-width: 767px) {
+  .nav {
+    display: none;
+  }
+}

@@ -1,0 +1,39 @@
+/* デザイントークン（設計書 9章）。色・余白の値は部品のCSSに直接書かず、必ずここの変数を使う */
+:root {
+  /* Color */
+  --color-bg: #f7f7f6;
+  --color-surface: #ffffff;
+  --color-ink: #1c1c1a;
+  --color-ink-soft: #4a4a47;
+  --color-muted: #8c8c89;
+  --color-line: #d9d9d6;
+  --color-tile: #f1f1ef;
+  --color-tile-hover: #e8e8e5;
+  --color-ink-hover: #33332f;
+  --color-photo-dim: #b8b6b0;
+
+  /* Space（基準8px） */
+  --margin: 64px;
+  --section-gap: 120px;
+  --photo-gap: 8px;
+  --header-h: 48px;
+  --radius-button: 10px;
+  --content-max: 1440px;
+
+  /* Font */
+  --font-serif: "Noto Serif JP", "Hiragino Mincho ProN", "Yu Mincho", serif;
+  --font-sans: "Noto Sans JP", "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+
+  /* Motion */
+  --ease: cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+/* 画面幅の切り替えは 768px の1か所だけ */
+@media (max-width: 767px) {
+  :root {
+    --margin: 20px;
+    --section-gap: 72px;
+    --photo-gap: 6px;
+    --header-h: 44px;
+  }
+}

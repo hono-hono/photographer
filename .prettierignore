@@ -1,0 +1,6 @@
+node_modules
+.next
+out
+.content
+public/photos
+package-lock.json

@@ -1,0 +1,28 @@
+.section {
+  margin-top: var(--section-gap);
+}
+
+.intro {
+  margin-top: 32px;
+  font-size: 14px;
+  line-height: 1.9;
+}
+
+/* フォームより目立たせない（補助の文字） */
+.mail {
+  margin-top: 32px;
+  font-size: 13px;
+  line-height: 1.8;
+  color: var(--color-ink-soft);
+}
+
+.mail a {
+  color: var(--color-ink-soft);
+  text-underline-offset: 3px;
+}
+
+@media (max-width: 767px) {
+  .intro {
+    margin-top: 24px;
+  }
+}
