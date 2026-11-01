@@ -34,3 +34,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# ビルド前に Kuroco から取得したデータと縮小した写真（リポジトリには入れない）
+/.content/
+/public/photos/

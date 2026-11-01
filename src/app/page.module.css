@@ -1,0 +1,21 @@
+.main {
+  max-width: var(--content-max);
+  margin: 0 auto;
+  padding: 64px var(--margin) 0;
+}
+
+.more {
+  display: flex;
+  justify-content: center;
+  margin-top: 56px;
+}
+
+@media (max-width: 767px) {
+  .main {
+    padding-top: 24px;
+  }
+
+  .more {
+    margin-top: 40px;
+  }
+}

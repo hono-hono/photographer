@@ -1,0 +1,98 @@
+.viewer {
+  height: 100%;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 56px minmax(0, 1fr) 56px;
+  grid-template-rows: minmax(0, 1fr);
+  align-items: center;
+  column-gap: 24px;
+}
+
+.light {
+  --viewer-ink: var(--color-ink);
+  --viewer-soft: var(--color-ink-soft);
+}
+
+.dark {
+  --viewer-ink: var(--color-bg);
+  --viewer-soft: var(--color-photo-dim);
+}
+
+.stage {
+  height: 100%;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.img {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+
+.arrow {
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  background: none;
+  border: none;
+  color: var(--viewer-ink);
+}
+
+/* 端では押せない矢印を隠す（写真の位置は動かさない） */
+.arrow:disabled {
+  visibility: hidden;
+}
+
+.spNav {
+  display: none;
+}
+
+.textButton {
+  min-width: 88px;
+  min-height: 44px;
+  padding: 0 8px;
+  background: none;
+  border: none;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  color: var(--viewer-ink);
+}
+
+.textButton:disabled {
+  visibility: hidden;
+}
+
+@media (max-width: 767px) {
+  .viewer {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr) auto;
+  }
+
+  .arrow {
+    display: none;
+  }
+
+  .spNav {
+    display: flex;
+    justify-content: space-between;
+    padding-top: 8px;
+  }
+
+  .textButton:first-child {
+    margin-left: -8px;
+    text-align: left;
+  }
+
+  .textButton:last-child {
+    margin-right: -8px;
+    text-align: right;
+  }
+}

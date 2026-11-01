@@ -1,14 +1,16 @@
 import type { NextConfig } from "next";
 
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+
 const nextConfig: NextConfig = {
-  // GitHub Pages 向けの静的エクスポート
+  // GitHub Pages 向けの静的書き出し
   output: "export",
-  images: {
-    unoptimized: true,
-  },
-  // リポジトリ名に合わせて変更してください（ユーザーサイトの場合は空文字）
-  basePath: process.env.NEXT_PUBLIC_BASE_PATH || "",
-  assetPrefix: process.env.NEXT_PUBLIC_BASE_PATH || "",
+  // /gallery を gallery/index.html として書き出す（GitHub Pages で確実に開けるように）
+  trailingSlash: true,
+  images: { unoptimized: true },
+  // GitHub Pages ではリポジトリ名の下に置かれる（deploy.yml で /photographer を渡す）
+  basePath,
+  assetPrefix: basePath || undefined,
 };
 
 export default nextConfig;

@@ -1,56 +1,47 @@
-import type { Metadata } from "next";
-import { Cormorant_Garamond, Noto_Sans_JP } from "next/font/google";
-import { Header } from "@/components/layout/Header";
+import type { Metadata, Viewport } from "next";
+// フォントはサイト自身から配信する（Google への通信なし）。使う太さだけ読み込む
+import "@fontsource/noto-serif-jp/400.css";
+import "@fontsource/noto-sans-jp/400.css";
+import "@fontsource/noto-sans-jp/500.css";
+import "@/styles/tokens.css";
+import "@/styles/globals.css";
 import { Footer } from "@/components/layout/Footer";
-import "./globals.css";
-
-const cormorant = Cormorant_Garamond({
-  subsets: ["latin"],
-  weight: ["300", "400", "500"],
-  variable: "--font-cormorant",
-  display: "swap",
-});
-
-const notoSansJP = Noto_Sans_JP({
-  subsets: ["latin"],
-  weight: ["300", "400"],
-  variable: "--font-noto-sans",
-  display: "swap",
-});
+import { Header } from "@/components/layout/Header";
+import { absoluteUrl, SITE_DESCRIPTION, SITE_NAME, SITE_TITLE, SITE_URL } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: {
-    default: "hono | Photographer",
-    template: "%s | hono",
-  },
-  description:
-    "写真家 hono のポートフォリオサイト。人の面影や物語を感じる風景から、大切な人との時間まで、心が動いた瞬間を写真として残しています。",
-  keywords: ["写真", "フォトグラファー", "ポートフォリオ", "家族写真", "hono"],
-  authors: [{ name: "hono" }],
+  // basePath は Next.js が自動で足すので、ここはドメインだけにする
+  metadataBase: new URL(new URL(SITE_URL).origin),
+  title: { default: SITE_TITLE, template: `%s | ${SITE_NAME}` },
+  description: SITE_DESCRIPTION,
+  authors: [{ name: SITE_NAME }],
   openGraph: {
     type: "website",
     locale: "ja_JP",
-    title: "hono | Photographer",
-    description:
-      "写真家 hono のポートフォリオサイト。心が動いた瞬間を写真として残しています。",
-    siteName: "hono",
+    siteName: SITE_NAME,
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
+    url: absoluteUrl("/"),
   },
-  robots: {
-    index: true,
-    follow: true,
-  },
+  twitter: { card: "summary_large_image" },
+  // 共有用の画像とアイコンは src/app/ の opengraph-image.png・icon.png・apple-icon.png から自動で設定される
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export const viewport: Viewport = {
+  themeColor: "#F7F7F6",
+};
+
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="ja" className={`${cormorant.variable} ${notoSansJP.variable}`}>
+    <html lang="ja">
       <body>
+        <a href="#main" className="skip-link">
+          本文へ移動
+        </a>
         <Header />
-        <main>{children}</main>
+        <div id="main" style={{ flex: "1 0 auto" }}>
+          {children}
+        </div>
         <Footer />
       </body>
     </html>

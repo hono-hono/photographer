@@ -1,0 +1,34 @@
+.rows {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: var(--photo-gap);
+}
+
+/* 伸び率 = 縦横比。幅の基準は0にして、行の中で縦横比の割合で幅を分ける */
+.item,
+.rest {
+  flex: var(--r) 1 0%;
+  min-width: 0;
+}
+
+.item {
+  aspect-ratio: var(--r);
+}
+
+/* 改行用の要素。ここで行が切れ、高さの分だけ行間になる */
+.break {
+  flex-basis: 100%;
+  height: var(--photo-gap);
+}
+
+@media (max-width: 767px) {
+  .pcOnly {
+    display: none;
+  }
+}
+
+@media (min-width: 768px) {
+  .spOnly {
+    display: none;
+  }
+}

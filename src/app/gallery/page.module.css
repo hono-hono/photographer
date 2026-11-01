@@ -1,0 +1,19 @@
+.main {
+  max-width: var(--content-max);
+  margin: 0 auto;
+  padding: 56px var(--margin) 0;
+}
+
+.heading {
+  margin-bottom: 24px;
+}
+
+@media (max-width: 767px) {
+  .main {
+    padding-top: 32px;
+  }
+
+  .heading {
+    margin-bottom: 20px;
+  }
+}

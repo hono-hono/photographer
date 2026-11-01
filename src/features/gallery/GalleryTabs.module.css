@@ -1,0 +1,54 @@
+.tablist {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 40px;
+  border-bottom: 1px solid var(--color-line);
+}
+
+.tab {
+  position: relative;
+  min-height: 44px;
+  margin-bottom: -1px;
+  padding: 0 2px;
+  background: none;
+  border: none;
+  border-bottom: 1px solid transparent;
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  color: var(--color-ink-soft);
+}
+
+.tab[aria-selected="true"] {
+  color: var(--color-ink);
+  border-bottom-color: var(--color-ink);
+}
+
+@media (hover: hover) {
+  .tab:hover {
+    color: var(--color-ink);
+  }
+}
+
+.panel {
+  margin-top: 32px;
+}
+
+/* URL を読み終えるまで隠す（一瞬 All が見えるのを防ぐ。高さは保つ） */
+.panel:not([data-ready]) {
+  visibility: hidden;
+}
+
+.empty {
+  padding: 48px 0;
+  color: var(--color-ink-soft);
+}
+
+@media (max-width: 767px) {
+  .tablist {
+    gap: 20px;
+  }
+
+  .panel {
+    margin-top: 24px;
+  }
+}

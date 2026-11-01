@@ -4,9 +4,11 @@
 
 ## 技術スタック
 
-- Next.js 15 (App Router)
-- TypeScript
-- CSS Modules
+- Next.js 15 (App Router、静的書き出し) + TypeScript
+- CSS Modules + CSS変数（`src/styles/tokens.css`）
+- CMS: Kuroco（作品・実績・プロフィール・お問い合わせ）
+- 公開: GitHub Pages（GitHub Actions で自動ビルド）
+- テスト: Vitest（並べ方・前後移動・Kuroco データの変換・入力チェック）
 
 ---
 
@@ -107,6 +109,10 @@ http://localhost:3000/
 
 写真家 hono のトップページが表示されれば成功です。
 
+> 💡 **補足：手元ではダミー写真で表示されます**
+> `npm run dev` は最初に `npm run content` を実行して、表示するデータを `.content/` に、縮小した写真を `public/photos/` に用意します。Kuroco のAPIトークンがなければ `dummy-photos/` のダミーを使います。
+> Kuroco のデータで確かめたいときは、`.env.local` に `KUROCO_API_TOKEN=トークン` を書いてから起動します（このファイルは GitHub に上がりません）。
+
 ---
 
 ### うまくいかないとき
@@ -135,25 +141,32 @@ http://localhost:3000/
 
 ---
 
-## ビルド
+## よく使うコマンド
 
-```bash
-npm run build
-```
+| コマンド | 内容 |
+|---|---|
+| `npm run dev` | 手元で表示（http://localhost:3000/） |
+| `npm run build` | 公開用のファイルを `out/` に書き出す |
+| `npm test` | テストを実行 |
+| `npm run typecheck` / `npm run lint` | 型と書き方のチェック |
+| `npm run content` | データと写真だけを取り直す |
 
-静的ファイルは `out/` ディレクトリに出力されます（GitHub Pages 向け）。
+## 公開の仕組み
 
-## GitHub Pages デプロイ
+`.github/workflows/deploy.yml` が次のときに動き、Kuroco からデータと写真を取ってビルドし、GitHub Pages に公開します。
 
-1. リポジトリの Settings → Pages で「GitHub Actions」をソースに設定
-2. `main` ブランチへの push で自動デプロイ
-3. `NEXT_PUBLIC_BASE_PATH` をリポジトリ名に合わせて `.github/workflows/deploy.yml` で調整
+- `main` に push したとき
+- Kuroco で保存したとき（Kuroco の外部システム連携から `repository_dispatch`、イベント名 `kuroco_update`）
+- Actions の画面から手動で実行したとき
 
-ユーザーサイト（`username.github.io`）の場合は `NEXT_PUBLIC_BASE_PATH` を空文字にしてください。
+> ⚠️ **注意**
+> リポジトリの Settings → Secrets に `KUROCO_API_TOKEN` がないとビルドを止めます（ダミー写真のまま公開されるのを防ぐため）。
 
-## 画像の差し替え
+## 写真と文章の更新
 
-`public/images/` のプレースホルダー画像を実際の作品に差し替え、`src/data/photos.ts` のパスを更新してください。
+写真・実績・プロフィール文は **Kuroco の管理画面**で更新します。コードを触る必要はありません。保存すると数分でサイトに反映されます。
+
+MV（トップの10枚）は、作品の「MVに使う」を「使う」にし、「MVの順番」に1〜10を入れます。ちょうど10件でないとビルドが止まり、Actions のログに理由が出ます。
 
 ## サイト構成
 
@@ -163,7 +176,6 @@ npm run build
 - `/gallery?category=all|works|family|anniversary` — Gallery（タブで絞り込み）
 - `/gallery/[slug]` — 作品詳細（写真だけを大きく表示）
 
-作品・実績・プロフィール文は CMS（Kuroco）で管理する予定です。
 
 ## ドキュメント
 

@@ -1,0 +1,12 @@
+.fade[data-state="hidden"] {
+  opacity: 0;
+  transform: translateY(8px);
+}
+
+.fade[data-state="shown"] {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity 0.6s var(--ease),
+    transform 0.6s var(--ease);
+}

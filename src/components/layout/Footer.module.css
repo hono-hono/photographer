@@ -1,14 +1,28 @@
 .footer {
-  padding-block: 3rem;
-  border-top: 1px solid var(--color-border);
+  margin-top: var(--section-gap);
+  border-top: 1px solid var(--color-line);
 }
 
 .inner {
-  text-align: center;
+  max-width: var(--content-max);
+  margin: 0 auto;
+  padding: 24px var(--margin);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--color-ink-soft);
 }
 
-.copyright {
-  font-size: 0.6875rem;
-  letter-spacing: 0.1em;
-  color: var(--color-accent);
+.copy {
+  font-size: 12px;
+}
+
+.link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  letter-spacing: 0.04em;
+  color: var(--color-ink-soft);
 }

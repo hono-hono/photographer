@@ -1,0 +1,42 @@
+/* 写真を画面の高さに収める（ヘッダーの下の残り全部） */
+.main {
+  height: calc(100svh - var(--header-h));
+  min-height: 420px;
+  max-width: var(--content-max);
+  margin: 0 auto;
+  padding: 16px var(--margin) 56px;
+  display: flex;
+  flex-direction: column;
+}
+
+.back {
+  flex: none;
+}
+
+.backLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  color: var(--color-ink-soft);
+  text-decoration: none;
+}
+
+@media (hover: hover) {
+  .backLink:hover {
+    color: var(--color-ink);
+  }
+}
+
+.viewer {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+@media (max-width: 767px) {
+  .main {
+    padding: 8px var(--margin) 24px;
+  }
+}
