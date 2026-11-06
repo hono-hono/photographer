@@ -112,7 +112,7 @@
 - [x] 🤖 トークン登録後、Actions を手動で実行して Kuroco のデータでビルドできるか確かめる（2026-11-06 成功。作品20件・MV10件・実績8行、写真21枚を縮小。公開の段階だけ Pages が未設定のため止まった）
 - [ ] 🙋 使っていない古いトークン（メモ「GitHub Actions build (KUROCO_API_TOKEN) long-lived」）を削除する（API「hono build」→ Swagger UI のトークン一覧。こちらからの削除は権限の確認で止められた）
 - [ ] 🙋 Kuroco の［KurocoFront］→［GitHub］で連携する（リポジトリ `hono-hono/photographer`、連携先のワークフロー `deploy.yml`、ブランチ `main`）
-- [ ] 🙋 「作品」「実績」「プロフィール」のコンテンツ定義で、「GitHub」の「ワークフロー」を有効にする（こちらの Kuroco の機能では変えられない設定）
+- [ ] 🙋 作品などを保存するとき、記事の編集画面の「GitHub」の項目にある「GitHub Actions ワークフロー」を「有効」にして更新する（これで自動公開が動く。選んだ状態が次回も残るかは、実際に保存して確かめる）
 - [ ] 🙋 **リポジトリの Settings → Pages で、Source を「GitHub Actions」にする**（これで公開される）
 
 > ⚠️ **注意：Kuroco の支払い方法**

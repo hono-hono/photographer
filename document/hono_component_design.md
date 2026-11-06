@@ -507,7 +507,7 @@ Figmaの変数（`hono/Color`、`hono/Space`）と名前を対応させる。
 **手順（Kuroco 側の設定）**
 1. Kuroco の［KurocoFront］→［GitHub］で GitHub と連携し、リポジトリ `hono-hono/photographer` を選ぶ。連携にはリポジトリの直下に `kuroco_front.json` が必要なので置いてある（KurocoFront では公開しないため、中身は空の設定）
 2. 同じ画面の「GitHub 連携先」で、ワークフローを `deploy.yml`、ブランチを `main` にする
-3. 「作品」「実績」「プロフィール」のコンテンツ定義の編集画面で、「GitHub」の「ワークフロー」を有効にする（保存のたびに `deploy.yml` が動く）
+3. 作品・実績・プロフィールの**記事の編集画面**にある「GitHub」の項目で、「GitHub Actions ワークフロー」を「有効」にして更新する（そのときに `deploy.yml` が動く）
 4. 管理画面で作品を保存 → 数分後にサイトへ反映される
 
 > 💡 **補足：反映までの時間**
