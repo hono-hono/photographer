@@ -156,7 +156,7 @@ http://localhost:3000/
 `.github/workflows/deploy.yml` が次のときに動き、Kuroco からデータと写真を取ってビルドし、GitHub Pages に公開します。
 
 - `main` に push したとき
-- Kuroco で保存したとき（Kuroco の外部システム連携から `repository_dispatch`、イベント名 `kuroco_update`）
+- Kuroco で保存したとき（Kuroco の GitHub 連携から。`kuroco_front.json` は連携に必要なため置いている）
 - Actions の画面から手動で実行したとき
 
 > ⚠️ **注意**

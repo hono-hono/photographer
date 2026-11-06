@@ -107,10 +107,12 @@
 ## ステップ6　公開の設定をする 🙋🤖
 
 - [x] 🙋 リポジトリの Settings → Secrets に Kuroco のAPIトークンを登録する（`KUROCO_API_TOKEN`。2026-11-06、管理画面の Swagger UI で発行したもの）
-- [x] 🤖 自動公開のワークフローに「Kuroco で更新したら再公開する」きっかけを足す（イベント名 `kuroco_update`。続けて保存したときは最後の1回にまとめる）
+- [x] 🤖 自動公開のワークフローに「Kuroco で更新したら再公開する」きっかけを足す（Kuroco から動かされたときは90秒待ち、続けて保存したときは最後の1回にまとめる）
+- [x] 🤖 Kuroco の GitHub 連携に必要な `kuroco_front.json` をリポジトリの直下に置く（2026-11-06）
 - [x] 🤖 トークン登録後、Actions を手動で実行して Kuroco のデータでビルドできるか確かめる（2026-11-06 成功。作品20件・MV10件・実績8行、写真21枚を縮小。公開の段階だけ Pages が未設定のため止まった）
 - [ ] 🙋 使っていない古いトークン（メモ「GitHub Actions build (KUROCO_API_TOKEN) long-lived」）を削除する（API「hono build」→ Swagger UI のトークン一覧。こちらからの削除は権限の確認で止められた）
-- [ ] 🙋 Kuroco の外部システム連携で GitHub と接続する（イベント名は `kuroco_update`）
+- [ ] 🙋 Kuroco の［KurocoFront］→［GitHub］で連携する（リポジトリ `hono-hono/photographer`、連携先のワークフロー `deploy.yml`、ブランチ `main`）
+- [ ] 🙋 「作品」「実績」「プロフィール」のコンテンツ定義で、「GitHub」の「ワークフロー」を有効にする（こちらの Kuroco の機能では変えられない設定）
 - [ ] 🙋 **リポジトリの Settings → Pages で、Source を「GitHub Actions」にする**（これで公開される）
 
 > ⚠️ **注意：Kuroco の支払い方法**
