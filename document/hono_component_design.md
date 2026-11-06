@@ -498,16 +498,17 @@ Figmaの変数（`hono/Color`、`hono/Space`）と名前を対応させる。
 3. `next.config.ts` に `output: 'export'` と `images.unoptimized: true` を書く
 4. GitHub Actions のワークフロー（既存の `.github/workflows/deploy.yml`）に、Kuroco からの通知で動くきっかけを足す。動くきっかけは次の3つ
    - `main` に push したとき（コードの変更）
-   - Kuroco から通知が来たとき（コンテンツの更新。`repository_dispatch`）
+   - Kuroco から通知が来たとき（コンテンツの更新。Kuroco の GitHub 連携が `workflow_dispatch` でワークフローを動かす）
    - 手動実行（念のため）
 5. リポジトリの Settings → Pages で、公開元を「GitHub Actions」にする
 
 ### 10.2 Kuroco で更新したときの自動公開
 
 **手順（Kuroco 側の設定）**
-1. Kuroco の［外部システム連携］で GitHub と連携する（GitHub のトークンとリポジトリを登録）
-2. 「作品」「実績」「プロフィール」の更新をきっかけに、GitHub Actions へビルドの依頼が送られるよう設定する（`repository_dispatch`、イベント名は **`kuroco_update`**）
-3. 管理画面で作品を保存 → 数分後にサイトへ反映される
+1. Kuroco の［KurocoFront］→［GitHub］で GitHub と連携し、リポジトリ `hono-hono/photographer` を選ぶ。連携にはリポジトリの直下に `kuroco_front.json` が必要なので置いてある（KurocoFront では公開しないため、中身は空の設定）
+2. 同じ画面の「GitHub 連携先」で、ワークフローを `deploy.yml`、ブランチを `main` にする
+3. 「作品」「実績」「プロフィール」のコンテンツ定義の編集画面で、「GitHub」の「ワークフロー」を有効にする（保存のたびに `deploy.yml` が動く）
+4. 管理画面で作品を保存 → 数分後にサイトへ反映される
 
 > 💡 **補足：反映までの時間**
 > ビルドは写真の数によって2〜5分程度かかる見込みです。何枚もまとめて登録するときに毎回ビルドが走らないよう、**ビルドの依頼を数分まとめて1回にする**設定（GitHub Actions の同時実行制御）を入れます。

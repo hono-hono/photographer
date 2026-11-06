@@ -2,14 +2,19 @@ name: Deploy to GitHub Pages
 
 # 動くきっかけ（設計書 10章）
 # - main に push したとき（コードの変更）
-# - Kuroco で作品・実績・プロフィールを保存したとき（Kuroco の外部システム連携から repository_dispatch）
-# - 手動実行
+# - Kuroco で作品・実績・プロフィールを保存したとき（Kuroco の GitHub 連携が workflow_dispatch でこのワークフローを動かす）
+# - 手動実行（Actions の画面から。待ち時間を 0 にするとすぐ始まる）
 on:
   push:
     branches: [main]
+  workflow_dispatch:
+    inputs:
+      wait:
+        description: "ビルドを始める前に待つ秒数（Kuroco で続けて保存したときに1回にまとめるため）"
+        required: false
+        default: "90"
   repository_dispatch:
     types: [kuroco_update]
-  workflow_dispatch:
 
 permissions:
   contents: read
@@ -26,8 +31,12 @@ jobs:
     steps:
       - name: Wait for more updates from Kuroco
         # 何枚もまとめて登録するとき、保存のたびにビルドが走らないよう少し待つ（その間に次の保存が来たらこの回は取り消される）
-        if: github.event_name == 'repository_dispatch'
-        run: sleep 90
+        if: github.event_name != 'push'
+        env:
+          WAIT: ${{ github.event.inputs.wait || '90' }}
+        run: |
+          case "$WAIT" in ''|*[!0-9]*) WAIT=90 ;; esac
+          sleep "$WAIT"
 
       - uses: actions/checkout@v4
 
