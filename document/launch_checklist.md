@@ -7,12 +7,13 @@
 
 ---
 
-## 現在地（2026-11-01 時点）
+## 現在地（2026-11-06 時点）
 
 - [x] 要件定義・コンセプト・トンマナ・サイト構成・各ページの仕様
 - [x] コンポーネント設計（Next.js × Kuroco）
 - [x] GitHub リポジトリ `hono-hono/photographer`、自動公開のワークフロー（`deploy.yml`）
-- [ ] **GitHub Pages が未設定**。自動公開は毎回「Pages が有効になっていない」エラーで止まっている（＝まだ公開されていない）
+- [x] サイトの実装（ステップ5）と、Kuroco のデータでのビルド
+- [ ] **GitHub Pages が未設定**。自動公開はビルドまで成功し、最後の公開の段階で「Pages が有効になっていない」エラーで止まっている（＝まだ公開されていない）
 
 ---
 
@@ -105,9 +106,10 @@
 
 ## ステップ6　公開の設定をする 🙋🤖
 
-- [ ] 🙋 リポジトリの Settings → Secrets に Kuroco のAPIトークンを登録する（`KUROCO_API_TOKEN`）
+- [x] 🙋 リポジトリの Settings → Secrets に Kuroco のAPIトークンを登録する（`KUROCO_API_TOKEN`。2026-11-06、管理画面の Swagger UI で発行したもの）
 - [x] 🤖 自動公開のワークフローに「Kuroco で更新したら再公開する」きっかけを足す（イベント名 `kuroco_update`。続けて保存したときは最後の1回にまとめる）
-- [ ] 🤖 トークン登録後、Actions を手動で実行して Kuroco のデータでビルドできるか確かめる
+- [x] 🤖 トークン登録後、Actions を手動で実行して Kuroco のデータでビルドできるか確かめる（2026-11-06 成功。作品20件・MV10件・実績8行、写真21枚を縮小。公開の段階だけ Pages が未設定のため止まった）
+- [ ] 🙋 使っていない古いトークン（メモ「GitHub Actions build (KUROCO_API_TOKEN) long-lived」）を削除する（API「hono build」→ Swagger UI のトークン一覧。こちらからの削除は権限の確認で止められた）
 - [ ] 🙋 Kuroco の外部システム連携で GitHub と接続する（イベント名は `kuroco_update`）
 - [ ] 🙋 **リポジトリの Settings → Pages で、Source を「GitHub Actions」にする**（これで公開される）
 
