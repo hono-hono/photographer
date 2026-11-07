@@ -218,7 +218,7 @@ Kuroco の API は `https://{サイトキー}.g.kuroco.app/rcms-api/{API番号}/
 - 呼び出し先の例: `https://hono-portfolio.g.kuroco.app/rcms-api/2/works`（ヘッダー `X-RCMS-API-ACCESS-TOKEN` にトークン）
 - hono contact の受け付ける送信元（CORS）は `https://hono-hono.github.io` と `http://localhost:3000`、メソッドは POST と OPTIONS
 - フォーム ID 3「お問い合わせ」: 項目は `name`（お名前）・`email`（メールアドレス）・`message`（お問い合わせ内容、3000字まで）、すべて必須。`category` は非表示。通知は photographer.hono@gmail.com に全項目つき、自動返信あり
-- 既存の API 1「Default」とフォーム 1「Default」は使わない（変更もしていない）
+- 最初から入っていた API 1「Default」・フォーム 1「Default」・メルマガ「Default」は使わないため削除した（2026-11-08。削除前にサイト全体をバックアップ）
 
 ---
 
