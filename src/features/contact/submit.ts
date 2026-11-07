@@ -4,7 +4,7 @@ import type { ContactErrors, ContactField, ContactValues } from "./validate";
 export type SubmitResult =
   | { ok: true }
   | { ok: false; kind: "validation"; errors: ContactErrors; message?: string }
-  | { ok: false; kind: "network" | "server" | "rate_limited" };
+  | { ok: false; kind: "network" | "server" | "rate_limited" | "closed" };
 
 /** Kuroco の項目名 → フォームの項目名 */
 const FIELD_MAP: Record<string, ContactField> = { name: "name", email: "email", body: "message", message: "message" };
@@ -26,6 +26,8 @@ export async function submitContact(values: ContactValues, endpoint = CONTACT_EN
 
   if (res.ok) return { ok: true };
   if (res.status === 429) return { ok: false, kind: "rate_limited" };
+  // Kuroco のフォームが「無効」になっているとき
+  if (res.status === 403) return { ok: false, kind: "closed" };
 
   const json = (await res.json().catch(() => null)) as { errors?: KurocoError[] } | null;
   if (res.status >= 400 && res.status < 500 && json?.errors?.length) {
