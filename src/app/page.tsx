@@ -14,7 +14,7 @@ export default function HomePage() {
       <section aria-label="代表作">
         <MainVisual works={mv} />
         <div className={styles.more}>
-          <Button variant="tile" href={galleryHref("all")}>
+          <Button variant="solid" href={galleryHref("all")}>
             すべての写真を見る<span aria-hidden="true">→</span>
           </Button>
         </div>
