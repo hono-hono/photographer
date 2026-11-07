@@ -574,5 +574,5 @@ Figmaの変数（`hono/Color`、`hono/Space`）と名前を対応させる。
 - [x] Web用写真の縮小サイズ → 長辺2400px・JPEG品質80（`scripts/fetch-content.ts` の `LONG_EDGE` / `QUALITY`）
 - [x] お問い合わせの自動返信メールの文面 → 仕様書 5.5
 - [x] 画像拡張項目の返り値の形 → `{ id, url, url_org, desc }`（OpenAPI で確認。`url_org` を使う）
-- [ ] Kuroco の GitHub 連携の設定画面の項目（ステップ6で確認）
+- [x] Kuroco の GitHub 連携 → ［KurocoFront］→［GitHub］で連携し、連携先を `deploy.yml`・`main` に。保存時の実行はカスタム処理＋トリガーで行う（2026-11-07 動作確認済み。Kuroco からは `workflow_dispatch` で動く）
 - [ ] 一覧の表示順（管理画面での並べ替え）を使うか。今は登録順（topics_id の昇順）
