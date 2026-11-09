@@ -1,6 +1,7 @@
 import "server-only";
 import { readFileSync } from "node:fs";
 import path from "node:path";
+import type { CategoryDef } from "@/lib/categories";
 import type { AchievementGroup, Profile, SiteContent, Work } from "@/types/content";
 
 /**
@@ -21,6 +22,11 @@ function load(): SiteContent {
     );
   }
   return cached;
+}
+
+/** Gallery のタブにするカテゴリ（Kuroco の表示順） */
+export function getCategories(): CategoryDef[] {
+  return load().categories;
 }
 
 export function getWorks(): Work[] {

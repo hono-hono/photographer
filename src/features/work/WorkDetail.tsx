@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useLayoutEffect, useState } from "react";
 import { PhotoViewer } from "@/components/photo/PhotoViewer";
-import { parseCategoryFilter, type CategoryFilter } from "@/lib/categories";
+import { parseCategoryFilter, type CategoryDef, type CategoryFilter } from "@/lib/categories";
 import { cameFromGallery } from "@/lib/navigation";
 import { withBase } from "@/lib/site";
 import { galleryHref, getNeighbors, workHref } from "@/lib/works";
@@ -16,14 +16,15 @@ import styles from "./WorkDetail.module.css";
  * - 前後移動は見ているカテゴリの中だけ。履歴は積まずに置き換える（何枚見ても戻る1回で Gallery へ）
  * - 「← Gallery」は Gallery から来たならブラウザの戻ると同じ動き（タブとスクロール位置が戻る）
  */
-export function WorkDetail({ work, works }: { work: Work; works: Work[] }) {
+export function WorkDetail({ work, works, categories }: { work: Work; works: Work[]; categories: CategoryDef[] }) {
   const router = useRouter();
   const [filter, setFilter] = useState<CategoryFilter>("all");
   const [fromGallery, setFromGallery] = useState(false);
 
   useLayoutEffect(() => {
-    setFilter(parseCategoryFilter(new URLSearchParams(window.location.search).get("category")));
+    setFilter(parseCategoryFilter(new URLSearchParams(window.location.search).get("category"), categories));
     setFromGallery(cameFromGallery());
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 最初の1回だけ URL を読む
   }, []);
 
   const { prev, next, filter: effective } = getNeighbors(works, work.slug, filter);

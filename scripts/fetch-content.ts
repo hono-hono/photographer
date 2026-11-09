@@ -12,15 +12,23 @@ import { existsSync } from "node:fs";
 import { mkdir, readFile, readdir, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 import sharp from "sharp";
-import { fetchAchievements, fetchProfile, fetchWorks, kurocoConfigFromEnv } from "../src/lib/kuroco/client";
+import {
+  fetchAchievements,
+  fetchCategories,
+  fetchProfile,
+  fetchWorks,
+  kurocoConfigFromEnv,
+} from "../src/lib/kuroco/client";
 import {
   mapAchievements,
+  mapCategories,
   mapProfile,
   mapWorks,
   pickMainVisual,
   type ProfileSource,
   type WorkSource,
 } from "../src/lib/kuroco/mappers";
+import type { CategoryDef } from "../src/lib/categories";
 import type { AchievementGroup, Photo, SiteContent, Work } from "../src/types/content";
 import { loadDummy } from "./dummy-content";
 
@@ -38,6 +46,7 @@ async function main() {
   const config = kurocoConfigFromEnv();
   const required = process.env.KUROCO_REQUIRED === "true";
 
+  let categories: CategoryDef[];
   let works: WorkSource[];
   let profile: ProfileSource;
   let achievements: AchievementGroup[];
@@ -46,15 +55,18 @@ async function main() {
 
   if (config) {
     console.log(`[content] Kuroco から取得します: ${config.baseUrl}/rcms-api/${config.apiId}/`);
-    const [rawWorks, rawAchievements, rawProfile] = await Promise.all([
+    const [rawCategories, rawWorks, rawAchievements, rawProfile] = await Promise.all([
+      fetchCategories(config),
       fetchWorks(config),
       fetchAchievements(config),
       fetchProfile(config),
     ]);
-    const w = mapWorks(rawWorks);
+    const c = mapCategories(rawCategories);
+    const w = mapWorks(rawWorks, c.categories);
     const a = mapAchievements(rawAchievements);
     const p = mapProfile(rawProfile);
-    errors.push(...w.errors, ...a.errors, ...p.errors);
+    errors.push(...c.errors, ...w.errors, ...a.errors, ...p.errors);
+    categories = c.categories.map(({ slug, label }) => ({ slug, label }));
     works = w.works;
     achievements = a.groups;
     profile = p.profile!;
@@ -64,7 +76,7 @@ async function main() {
       fail(["KUROCO_API_TOKEN が設定されていません（GitHub の Settings → Secrets に登録してください）"]);
     }
     console.warn("[content] KUROCO_API_TOKEN がないため、dummy-photos/ のダミーデータで作ります");
-    ({ works, profile, achievements } = loadDummy());
+    ({ categories, works, profile, achievements } = loadDummy());
     source = "dummy";
   }
 
@@ -105,6 +117,8 @@ async function main() {
   const content: SiteContent = {
     source,
     generatedAt: new Date().toISOString(),
+    // 作品が1件もないカテゴリはタブに出さない
+    categories: categories.filter((c) => siteWorks.some((w) => w.category === c.slug)),
     works: siteWorks,
     mainVisual: mv.slugs,
     profile: { lead: profile.lead, history: profile.history, portrait },
@@ -114,7 +128,7 @@ async function main() {
   await writeFile(OUT_JSON, JSON.stringify(content, null, 2));
   await writeFile(CACHE_JSON, JSON.stringify(nextCache, null, 2));
   console.log(
-    `[content] 作品 ${siteWorks.length} 件（MV ${mv.slugs.length} 件）、実績 ${achievements.reduce((n, g) => n + g.items.length, 0)} 行。写真の縮小 ${processed} 枚（残りは前回のものを使用）`,
+    `[content] カテゴリ ${content.categories.map((c) => c.label).join(" / ")}、作品 ${siteWorks.length} 件（MV ${mv.slugs.length} 件）、実績 ${achievements.reduce((n, g) => n + g.items.length, 0)} 行。写真の縮小 ${processed} 枚（残りは前回のものを使用）`,
   );
 }
 

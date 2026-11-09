@@ -1,4 +1,4 @@
-import type { KurocoAchievement, KurocoList, KurocoProfile, KurocoWork } from "./types";
+import type { KurocoAchievement, KurocoCategory, KurocoList, KurocoProfile, KurocoWork } from "./types";
 
 /**
  * Kuroco API の呼び出し。ビルド時（scripts/fetch-content.ts）にだけ使う。
@@ -66,6 +66,7 @@ export class KurocoError extends Error {
   }
 }
 
+export const fetchCategories = (c: KurocoConfig) => getList<KurocoCategory>(c, "categories");
 export const fetchWorks = (c: KurocoConfig) => getList<KurocoWork>(c, "works");
 export const fetchAchievements = (c: KurocoConfig) => getList<KurocoAchievement>(c, "achievements");
 export const fetchProfile = (c: KurocoConfig) => getList<KurocoProfile>(c, "profile");

@@ -3,7 +3,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { JustifiedRows } from "@/components/photo/JustifiedRows";
 import { PhotoTile } from "@/components/photo/PhotoTile";
-import { CATEGORY_FILTERS, parseCategoryFilter, type CategoryFilter } from "@/lib/categories";
+import { ALL_FILTER, parseCategoryFilter, type CategoryDef, type CategoryFilter } from "@/lib/categories";
 import { rememberGallery, takeGalleryScroll } from "@/lib/navigation";
 import { GALLERY_TARGET, groupRows } from "@/lib/rows";
 import { filterWorks, workHref } from "@/lib/works";
@@ -16,15 +16,18 @@ import styles from "./GalleryTabs.module.css";
  * - 切り替えは演出なしで、瞬時に絞り込む
  * - ARIA の tablist / tab / tabpanel。←→ でタブ間を移動、Home / End で先頭・末尾へ
  */
-export function GalleryTabs({ works }: { works: Work[] }) {
+export function GalleryTabs({ works, categories }: { works: Work[]; categories: CategoryDef[] }) {
+  // タブは「All」＋ Kuroco のカテゴリ（表示順）
+  const tabs: CategoryDef[] = [ALL_FILTER, ...categories];
   const [filter, setFilter] = useState<CategoryFilter>("all");
   const [ready, setReady] = useState(false);
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
   // 静的に書き出した HTML は All の状態。ブラウザで URL を読んでから絞り込む
   useLayoutEffect(() => {
-    setFilter(parseCategoryFilter(new URLSearchParams(window.location.search).get("category")));
+    setFilter(parseCategoryFilter(new URLSearchParams(window.location.search).get("category"), categories));
     setReady(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 最初の1回だけ URL を読む
   }, []);
 
   // 作品詳細からブラウザの戻るで帰ってきたら、スクロール位置を戻す
@@ -39,11 +42,11 @@ export function GalleryTabs({ works }: { works: Work[] }) {
     const url = new URL(window.location.href);
     url.searchParams.set("category", next);
     window.history.replaceState(window.history.state, "", url);
-    if (focus) tabRefs.current[CATEGORY_FILTERS.findIndex((t) => t.value === next)]?.focus();
+    if (focus) tabRefs.current[tabs.findIndex((t) => t.slug === next)]?.focus();
   };
 
   const onKeyDown = (e: React.KeyboardEvent, index: number) => {
-    const last = CATEGORY_FILTERS.length - 1;
+    const last = tabs.length - 1;
     const to =
       e.key === "ArrowRight"
         ? index === last
@@ -60,7 +63,7 @@ export function GalleryTabs({ works }: { works: Work[] }) {
               : null;
     if (to === null) return;
     e.preventDefault();
-    select(CATEGORY_FILTERS[to].value, true);
+    select(tabs[to].slug, true);
   };
 
   const shown = filterWorks(works, filter);
@@ -69,22 +72,22 @@ export function GalleryTabs({ works }: { works: Work[] }) {
   return (
     <>
       <div role="tablist" aria-label="カテゴリ" className={styles.tablist}>
-        {CATEGORY_FILTERS.map((tab, i) => {
-          const selected = tab.value === filter;
+        {tabs.map((tab, i) => {
+          const selected = tab.slug === filter;
           return (
             <button
-              key={tab.value}
+              key={tab.slug}
               ref={(el) => {
                 tabRefs.current[i] = el;
               }}
-              id={`tab-${tab.value}`}
+              id={`tab-${tab.slug}`}
               type="button"
               role="tab"
               aria-selected={selected}
               aria-controls="gallery-panel"
               tabIndex={selected ? 0 : -1}
               className={styles.tab}
-              onClick={() => select(tab.value)}
+              onClick={() => select(tab.slug)}
               onKeyDown={(e) => onKeyDown(e, i)}
             >
               {tab.label}

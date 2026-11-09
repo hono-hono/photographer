@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { WorkDetail } from "@/features/work/WorkDetail";
-import { getWork, getWorks } from "@/lib/content";
+import { getCategories, getWork, getWorks } from "@/lib/content";
 import { absoluteUrl } from "@/lib/site";
 
 type Params = { slug: string };
@@ -37,5 +37,5 @@ export default async function WorkPage({ params }: { params: Promise<Params> }) 
   const works = getWorks();
   const work = works.find((w) => w.slug === slug);
   if (!work) notFound();
-  return <WorkDetail work={work} works={works} />;
+  return <WorkDetail work={work} works={works} categories={getCategories()} />;
 }

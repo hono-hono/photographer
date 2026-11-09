@@ -1,6 +1,12 @@
-import { ACHIEVEMENT_GROUPS, isCategory, type Category } from "@/lib/categories";
+import {
+  ACHIEVEMENT_GROUPS,
+  ALL_FILTER,
+  CATEGORY_SLUG_PATTERN,
+  type Category,
+  type CategoryDef,
+} from "@/lib/categories";
 import type { AchievementGroup } from "@/types/content";
-import type { KurocoAchievement, KurocoProfile, KurocoWork } from "./types";
+import type { KurocoAchievement, KurocoCategory, KurocoProfile, KurocoWork } from "./types";
 
 /**
  * Kuroco の生データ → サイト用のデータへの変換と検査。
@@ -53,15 +59,54 @@ function toOrder(v: unknown): number | null {
   return Number.isFinite(n) ? n : null;
 }
 
-export function mapWorks(raw: KurocoWork[]): { works: WorkSource[]; errors: string[] } {
+/** Kuroco の作品カテゴリ → サイトのタブ。並び順は Kuroco の表示順（大きい順）、同じなら登録順 */
+export function mapCategories(raw: KurocoCategory[]): {
+  categories: (CategoryDef & { id: number })[];
+  errors: string[];
+} {
+  const errors: string[] = [];
+  const seen = new Set<string>();
+  const sorted = [...raw].sort(
+    (a, b) =>
+      (Number(b.category_weight) || 0) - (Number(a.category_weight) || 0) ||
+      Number(a.topics_category_id) - Number(b.topics_category_id),
+  );
+  const categories: (CategoryDef & { id: number })[] = [];
+  for (const c of sorted) {
+    const label = clean(c.category_nm);
+    const slug = clean(c.slug);
+    const name = `カテゴリ「${label || c.topics_category_id}」`;
+    if (!label) errors.push(`${name}: カテゴリ名が空です`);
+    if (!slug) errors.push(`${name}: スラッグが空です（URL に使うので、英数字で入れてください。例: works）`);
+    else if (!CATEGORY_SLUG_PATTERN.test(slug))
+      errors.push(`${name}: スラッグ「${slug}」は英数字とアンダースコアだけにしてください`);
+    else if (slug === ALL_FILTER.slug)
+      errors.push(`${name}: スラッグ「all」は「すべて」のタブで使うので、別の名前にしてください`);
+    else if (seen.has(slug)) errors.push(`${name}: スラッグ「${slug}」が他のカテゴリと重複しています`);
+    if (slug) seen.add(slug);
+    if (label && slug && CATEGORY_SLUG_PATTERN.test(slug) && slug !== ALL_FILTER.slug) {
+      categories.push({ id: Number(c.topics_category_id), slug, label });
+    }
+  }
+  if (raw.length === 0)
+    errors.push("作品のカテゴリが1つもありません（［コンテンツ定義］→「作品」の［カテゴリ］で作ってください）");
+  return { categories, errors };
+}
+
+export function mapWorks(
+  raw: KurocoWork[],
+  categories: { id: number; slug: Category }[],
+): { works: WorkSource[]; errors: string[] } {
   const errors: string[] = [];
   const works: WorkSource[] = [];
   const seen = new Set<string>();
+  const slugById = new Map(categories.map((c) => [c.id, c.slug]));
 
   for (const item of raw) {
     const label = `作品「${clean(item.subject) || item.topics_id}」(topics_id ${item.topics_id})`;
     const slug = clean(item.slug);
-    const category = item.category?.key;
+    const categoryId = Number(item.contents_type);
+    const category = slugById.get(categoryId);
     const alt = clean(item.alt);
     const imageUrl = imageUrlOf(item.photo);
 
@@ -69,13 +114,18 @@ export function mapWorks(raw: KurocoWork[]): { works: WorkSource[]; errors: stri
     else if (!SLUG_PATTERN.test(slug))
       errors.push(`${label}: スラッグ「${slug}」は英小文字・数字・ハイフンだけにしてください`);
     else if (seen.has(slug)) errors.push(`${label}: スラッグ「${slug}」が他の作品と重複しています`);
-    if (!isCategory(category))
-      errors.push(`${label}: カテゴリ「${category ?? "（空）"}」が works / family / anniversary のどれでもありません`);
+    if (!category) {
+      errors.push(
+        item.contents_type
+          ? `${label}: カテゴリ「${clean(item.contents_type_nm) || categoryId}」が使えません（非公開か、スラッグが入っていない可能性があります）`
+          : `${label}: カテゴリが選ばれていません`,
+      );
+    }
     if (!alt) errors.push(`${label}: 代替テキストが空です`);
     if (!imageUrl) errors.push(`${label}: 写真が登録されていません`);
 
     if (slug) seen.add(slug);
-    if (!slug || !SLUG_PATTERN.test(slug) || !isCategory(category) || !alt || !imageUrl) continue;
+    if (!slug || !SLUG_PATTERN.test(slug) || !category || !alt || !imageUrl) continue;
 
     works.push({
       slug,

@@ -17,11 +17,20 @@ type KurocoBase = {
 };
 
 export type KurocoWork = KurocoBase & {
-  category?: KurocoSelect;
+  /** 標準のカテゴリ（作品のカテゴリ ID） */
+  contents_type?: number | string | null;
+  contents_type_nm?: string;
   photo?: KurocoFile;
   alt?: string;
   mv?: boolean | null;
   mv_order?: number | string | null;
+};
+
+export type KurocoCategory = {
+  topics_category_id: number | string;
+  category_nm: string;
+  slug?: string | null;
+  category_weight?: number | string | null;
 };
 
 export type KurocoAchievement = KurocoBase & {
