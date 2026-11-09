@@ -233,10 +233,10 @@ Kuroco の API は `https://{サイトキー}.g.kuroco.app/rcms-api/{API番号}/
 Kuroco の生データは `lib/kuroco/mappers.ts` でこの形に変換してから、部品に渡します。
 
 ```ts
-// lib/categories.ts
-export const CATEGORIES = ['works', 'family', 'anniversary'] as const;
-export type Category = (typeof CATEGORIES)[number];
+// lib/categories.ts（カテゴリの種類は Kuroco で管理するので、コードには持たない）
+export type Category = string;                    // Kuroco のカテゴリのスラッグ
 export type CategoryFilter = Category | 'all';
+export type CategoryDef = { slug: string; label: string };  // タブ1つ分
 
 // types/content.ts
 export type Photo = {
@@ -253,6 +253,8 @@ export type Work = {
 };
 
 export type MainVisual = Work[];   // ちょうど10件
+
+// SiteContent.categories: CategoryDef[]   // タブの並び（Kuroco の表示順）
 
 export type Profile = {
   lead: string;
@@ -560,7 +562,7 @@ Figmaの変数（`hono/Color`、`hono/Space`）と名前を対応させる。
 ## 12.5 実装メモ（2026-11-01、ステップ5）
 
 - **トークンがないときはダミーで動く。** 手元（`npm run dev`）では `dummy-photos/` を使う。GitHub Actions では `KUROCO_REQUIRED=true` にしてあり、トークンがなければビルドを止める（ダミーのまま公開されるのを防ぐ）
-- **ビルドを止める条件**: スラッグの空欄・形式違い・重複、カテゴリが3種類以外、代替テキストの空欄、写真の未登録、MVがちょうど10件でない、MVの順番の重複、プロフィールの欠け。理由は Actions のログに日本語で出る
+- **ビルドを止める条件**: スラッグの空欄・形式違い・重複、カテゴリの未選択・スラッグの空欄や重複、代替テキストの空欄、写真の未登録、MVがちょうど10件でない、MVの順番の重複、プロフィールの欠け。理由は Actions のログに日本語で出る
 - **書き出しは `trailingSlash: true`**（`/gallery/` を `gallery/index.html` として書き出す）。GitHub Pages でフォルダとファイルの名前がぶつからないようにするため
 - **Gallery の戻り方**: 写真を押したときの場所（URL とスクロール位置）を覚え、作品詳細の「← Gallery」はブラウザの戻ると同じ動きにした。ブラウザの戻るで帰ったときだけスクロール位置を戻す（`src/lib/navigation.ts`）
 - **拡大表示の閉じ方**: 「✕ 閉じる」、Esc、写真とボタン以外の場所を押す。閉じると押した写真にフォーカスが戻り、スクロール位置もそのまま
