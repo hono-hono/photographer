@@ -1,4 +1,4 @@
-import type { Category } from "@/lib/categories";
+import type { Category, CategoryDef } from "@/lib/categories";
 
 export type Photo = {
   /** サイトに同梱した縮小済み画像のパス（basePath なし。例: /photos/xxx.jpg） */
@@ -28,6 +28,8 @@ export type AchievementGroup = { key: string; label: string; items: Achievement[
 export type SiteContent = {
   source: "kuroco" | "dummy";
   generatedAt: string;
+  /** Gallery のタブ（Kuroco のカテゴリの表示順。作品が1件もないカテゴリは除く） */
+  categories: CategoryDef[];
   works: Work[];
   /** MVに出す作品のスラッグ（表示順、ちょうど10件） */
   mainVisual: string[];

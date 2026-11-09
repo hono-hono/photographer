@@ -1,22 +1,26 @@
-/** 作品のカテゴリ（Gallery のタブ）。Kuroco の「作品」の category の値と同じ */
-export const CATEGORIES = ["works", "family", "anniversary"] as const;
-export type Category = (typeof CATEGORIES)[number];
+/**
+ * 作品のカテゴリ（Gallery のタブ）。
+ * 種類・表示名・並び順は Kuroco の「作品」の標準カテゴリで管理する（コードには持たない）。
+ * URL の ?category= にはカテゴリのスラッグを使う。
+ */
+export type Category = string;
 export type CategoryFilter = Category | "all";
 
-export const CATEGORY_FILTERS: { value: CategoryFilter; label: string }[] = [
-  { value: "all", label: "All" },
-  { value: "works", label: "Works" },
-  { value: "family", label: "Family" },
-  { value: "anniversary", label: "Anniversary" },
-];
+export type CategoryDef = {
+  /** URL に使う値（Kuroco のカテゴリのスラッグ） */
+  slug: string;
+  /** タブの表示名（Kuroco のカテゴリ名） */
+  label: string;
+};
 
-export function isCategory(value: unknown): value is Category {
-  return typeof value === "string" && (CATEGORIES as readonly string[]).includes(value);
-}
+export const ALL_FILTER = { slug: "all", label: "All" } as const;
 
-/** URL の ?category= の値を検証する。不正な値や指定なしは all */
-export function parseCategoryFilter(value: string | null | undefined): CategoryFilter {
-  return isCategory(value) ? value : "all";
+/** Kuroco のカテゴリのスラッグとして使える形（英数字・アンダースコア。all は予約） */
+export const CATEGORY_SLUG_PATTERN = /^[A-Za-z0-9_]+$/;
+
+/** URL の ?category= の値を検証する。知らない値や指定なしは all */
+export function parseCategoryFilter(value: string | null | undefined, categories: CategoryDef[]): CategoryFilter {
+  return value && categories.some((c) => c.slug === value) ? value : "all";
 }
 
 /** 実績の区分。サイトでの並び順もこの順に固定する */

@@ -6,7 +6,7 @@ import { readFileSync } from "node:fs";
 import path from "node:path";
 import type { AchievementGroup } from "../src/types/content";
 import type { ProfileSource, WorkSource } from "../src/lib/kuroco/mappers";
-import { isCategory } from "../src/lib/categories";
+import type { CategoryDef } from "../src/lib/categories";
 
 type Manifest = {
   works: { slug: string; category: string; file: string; alt: string }[];
@@ -16,10 +16,22 @@ type Manifest = {
 
 const DIR = path.join(process.cwd(), "dummy-photos");
 
-export function loadDummy(): { works: WorkSource[]; profile: ProfileSource; achievements: AchievementGroup[] } {
+const DUMMY_CATEGORIES: CategoryDef[] = [
+  { slug: "works", label: "Works" },
+  { slug: "family", label: "Family" },
+  { slug: "anniversary", label: "Anniversary" },
+];
+
+export function loadDummy(): {
+  categories: CategoryDef[];
+  works: WorkSource[];
+  profile: ProfileSource;
+  achievements: AchievementGroup[];
+} {
   const manifest = JSON.parse(readFileSync(path.join(DIR, "manifest.json"), "utf8")) as Manifest;
   const works: WorkSource[] = manifest.works.map((w) => {
-    if (!isCategory(w.category)) throw new Error(`dummy-photos: カテゴリが不正です (${w.slug})`);
+    if (!DUMMY_CATEGORIES.some((c) => c.slug === w.category))
+      throw new Error(`dummy-photos: カテゴリが不正です (${w.slug})`);
     const mvIndex = manifest.mainVisual.indexOf(w.slug);
     return {
       slug: w.slug,
@@ -32,6 +44,7 @@ export function loadDummy(): { works: WorkSource[]; profile: ProfileSource; achi
   });
 
   return {
+    categories: DUMMY_CATEGORIES,
     works,
     profile: {
       lead: "そこにいた人の気配や、営まれていた暮らしを想像できる風景に惹かれています。写真を見る人にも、その場所に流れていた時間を感じてもらえたらうれしいです。",

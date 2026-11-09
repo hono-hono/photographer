@@ -34,9 +34,14 @@ describe("getNeighbors", () => {
 
 describe("parseCategoryFilter", () => {
   it("不正な値や指定なしは all", () => {
-    expect(parseCategoryFilter(null)).toBe("all");
-    expect(parseCategoryFilter("WORKS")).toBe("all");
-    expect(parseCategoryFilter("family")).toBe("family");
+    const cats = [
+      { slug: "works", label: "Works" },
+      { slug: "family", label: "Family" },
+    ];
+    expect(parseCategoryFilter(null, cats)).toBe("all");
+    expect(parseCategoryFilter("WORKS", cats)).toBe("all");
+    expect(parseCategoryFilter("family", cats)).toBe("family");
+    expect(parseCategoryFilter("travel", cats)).toBe("all");
   });
 });
 
