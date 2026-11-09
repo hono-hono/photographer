@@ -89,7 +89,7 @@ export function mapCategories(raw: KurocoCategory[]): {
     }
   }
   if (raw.length === 0)
-    errors.push("作品のカテゴリが1つもありません（［コンテンツ定義］→「作品」の［カテゴリ］で作ってください）");
+    errors.push("作品のカテゴリが1つもありません（［コンテンツ定義］→「作品」の行の［カテゴリ設定］で作ってください）");
   return { categories, errors };
 }
 
