@@ -95,19 +95,21 @@ export function mapCategories(raw: KurocoCategory[]): {
 
 export function mapWorks(
   raw: KurocoWork[],
-  categories: { id: number; slug: Category }[],
+  categories: { id: number; slug: Category; label?: string }[],
 ): { works: WorkSource[]; errors: string[] } {
   const errors: string[] = [];
   const works: WorkSource[] = [];
   const seen = new Set<string>();
   const slugById = new Map(categories.map((c) => [c.id, c.slug]));
+  const labelById = new Map(categories.map((c) => [c.id, c.label]));
 
   for (const item of raw) {
     const label = `作品「${clean(item.subject) || item.topics_id}」(topics_id ${item.topics_id})`;
     const slug = clean(item.slug);
     const categoryId = Number(item.contents_type);
     const category = slugById.get(categoryId);
-    const alt = clean(item.alt);
+    // 代替テキストは任意。空のときは「hono の写真（カテゴリ名）」で補う
+    const alt = clean(item.alt) || `hono の写真（${labelById.get(categoryId) ?? "作品"}）`;
     const imageUrl = imageUrlOf(item.photo);
 
     if (!slug) errors.push(`${label}: スラッグが空です`);
@@ -121,11 +123,10 @@ export function mapWorks(
           : `${label}: カテゴリが選ばれていません`,
       );
     }
-    if (!alt) errors.push(`${label}: 代替テキストが空です`);
     if (!imageUrl) errors.push(`${label}: 写真が登録されていません`);
 
     if (slug) seen.add(slug);
-    if (!slug || !SLUG_PATTERN.test(slug) || !category || !alt || !imageUrl) continue;
+    if (!slug || !SLUG_PATTERN.test(slug) || !category || !imageUrl) continue;
 
     works.push({
       slug,

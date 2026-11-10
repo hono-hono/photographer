@@ -63,26 +63,30 @@ describe("mapWorks", () => {
     expect(mapWorks([work(1, { contents_type: null })], CATS).errors[0]).toMatch(/選ばれていません/);
   });
 
+  it("代替テキストが空ならカテゴリ名で補う", () => {
+    const { works, errors } = mapWorks([work(1, { alt: "  " })], CATS);
+    expect(errors).toEqual([]);
+    expect(works[0].alt).toMatch(/^hono の写真（.+）$/);
+  });
+
   it("MVに使わない作品は順番を無視する", () => {
     expect(mapWorks([work(1, { mv: false, mv_order: 3 })], CATS).works[0].mvOrder).toBeNull();
   });
 
-  it("スラッグの重複・形式、代替テキスト、カテゴリ、写真の欠けを知らせる", () => {
+  it("スラッグの重複・形式、カテゴリ、写真の欠けを知らせる", () => {
     const { errors } = mapWorks(
       [
         work(1),
         work(2, { slug: "place-01" }),
         work(3, { slug: "Place 03" }),
-        work(4, { alt: "  " }),
         work(5, { contents_type: 99, contents_type_nm: "非公開" }),
         work(6, { photo: null }),
       ],
       CATS,
     );
-    expect(errors).toHaveLength(5);
+    expect(errors).toHaveLength(4);
     expect(errors.join("\n")).toMatch(/重複/);
     expect(errors.join("\n")).toMatch(/英小文字/);
-    expect(errors.join("\n")).toMatch(/代替テキスト/);
     expect(errors.join("\n")).toMatch(/カテゴリ/);
     expect(errors.join("\n")).toMatch(/写真/);
   });
