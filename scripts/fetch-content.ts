@@ -97,7 +97,9 @@ async function main() {
     const thumbFile = path.join(PHOTO_DIR, `${key}.sm.jpg`);
     const hit = cache[key];
     let size: CachedSize;
-    if (hit && hit.version === version && existsSync(file) && (!hit.thumbWidth || existsSync(thumbFile))) {
+    // thumbWidth が記録されていない古いキャッシュは、一覧用の写真を作るために作り直す（0 = 元が小さく不要）
+    const thumbOk = hit?.thumbWidth === 0 || (!!hit?.thumbWidth && existsSync(thumbFile));
+    if (hit && hit.version === version && existsSync(file) && thumbOk) {
       size = hit;
     } else {
       size = await resizeTo(await loadImage(url), file, thumbFile);
@@ -158,7 +160,7 @@ async function resizeTo(input: Buffer, file: string, thumbFile: string): Promise
   // 一覧用の小さい写真（元が十分に小さければ作らない）
   if (Math.max(info.width, info.height) <= THUMB_EDGE * 1.2) {
     await rm(thumbFile, { force: true });
-    return { width: info.width, height: info.height };
+    return { width: info.width, height: info.height, thumbWidth: 0 };
   }
   const thumb = await sharp(file)
     .resize({ width: THUMB_EDGE, height: THUMB_EDGE, fit: "inside" })
