@@ -167,7 +167,7 @@ Kuroco の Admin MCP（claude.ai のコネクタ「Kuroco Admin」）から作�
   - カテゴリ名 → Gallery のタブの表示名、スラッグ → URL の `?category=` の値、表示順（大きい順）→ タブの並び順
   - スラッグは英数字とアンダースコアだけ。`all` は「すべて」のタブで使うので使えない。スラッグが空だとビルドを止めて知らせる
   - 作品が1件もないカテゴリはタブに出さない。非公開にしたカテゴリの作品があるとビルドを止める
-  - 現在のカテゴリ（表示順の大きい順）: Works（ID 15、`works`、仕事の撮影）・Personal（ID 20、`personal`、個人の作品）・Family（ID 18、`family`）・Anniversary（ID 19、`anniversary`）
+  - 現在のカテゴリ（表示順の大きい順、2026-11-12 時点）: Personal（ID 20、`personal`、個人の作品）・Works（ID 15、`works`、仕事の撮影）・Others（ID 19、`others`）
   - 以前の選択の項目「カテゴリ」（`category`、ext 1）は 2026-11-10 までに管理画面で削除済み
 
 > 💡 **補足：MVを別のコンテンツ定義にしない理由**
