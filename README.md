@@ -189,4 +189,5 @@ MV（トップの10枚）は、作品の「MVに使う」を「使う」にし�
 | [document/hono_design_brief.md](./document/hono_design_brief.md) | デザイン依頼書 |
 | [document/hono_component_design.md](./document/hono_component_design.md) | コンポーネント設計書（Next.js × Kuroco） |
 | [document/launch_checklist.md](./document/launch_checklist.md) | 公開までの手順 |
+| [document/operation_manual.md](./document/operation_manual.md) | 運用マニュアル（作品・カテゴリ・MVの更新、ビルドが止まったとき） |
 | [document/learning/](./document/learning/) | 学習メモ |
