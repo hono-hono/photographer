@@ -13,7 +13,7 @@
 - [x] コンポーネント設計（Next.js × Kuroco）
 - [x] GitHub リポジトリ `hono-hono/photographer`、自動公開のワークフロー（`deploy.yml`）
 - [x] サイトの実装（ステップ5）と、Kuroco のデータでのビルド
-- [x] **GitHub Pages で公開中**（2026-11-07〜。https://hono-hono.github.io/photographer/ ）。リポジトリは公開（Public）に変更。今はダミー写真のまま
+- [x] **GitHub Pages で公開中**（2026-11-07〜。https://hono-hono.github.io/photographer/ ）。リポジトリは公開（Public）に変更。本物の写真とダミー写真が混在（2026-11-12）
 - [x] 公開後の修正（2026-11-08〜12）: ボタンの色、お問い合わせの不具合、自動返信の改行、Kuroco の不要な初期データの削除、**カテゴリを Kuroco で管理**（今は Personal / Works / Others）、作品の代替テキストを任意に、sitemap.xml、一覧用の小さい写真、依存パッケージの更新
 - 日々の更新のしかたは `operation_manual.md`（運用マニュアル）
 
@@ -50,7 +50,7 @@
 - [ ] ココナラのプロフィールの撮影歴「約5年」を「2013年から」に直す
 
 > ⚠️ **注意**
-> 公開するのは、写っている人の了承が取れている写真だけにしてください。特に Family / Anniversary の写真が対象です。
+> 公開するのは、写っている人の了承が取れている写真だけにしてください。特に人物が写っている写真が対象です。
 
 ---
 
