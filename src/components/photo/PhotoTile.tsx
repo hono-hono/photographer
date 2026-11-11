@@ -23,6 +23,13 @@ export function PhotoTile(props: Props) {
     <img
       className={styles.img}
       src={withBase(photo.src)}
+      // 一覧では小さい写真を使い、画面が大きい・高精細なときだけ元の大きさを読む
+      srcSet={
+        photo.thumb
+          ? `${withBase(photo.thumb.src)} ${photo.thumb.width}w, ${withBase(photo.src)} ${photo.width}w`
+          : undefined
+      }
+      sizes={photo.thumb ? "(max-width: 767px) 60vw, 40vw" : undefined}
       alt={photo.alt}
       width={photo.width}
       height={photo.height}

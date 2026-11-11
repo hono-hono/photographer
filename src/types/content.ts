@@ -7,6 +7,8 @@ export type Photo = {
   width: number;
   height: number;
   alt: string;
+  /** 一覧用の小さい写真（長辺1200px）。元が小さいときはない */
+  thumb?: { src: string; width: number };
 };
 
 export type Work = {

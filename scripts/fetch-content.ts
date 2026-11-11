@@ -38,9 +38,11 @@ const CACHE_JSON = path.join(ROOT, ".content", "images.json");
 const PHOTO_DIR = path.join(ROOT, "public", "photos");
 const LONG_EDGE = 2400;
 const QUALITY = 80;
+/** 一覧（MV・Gallery）用の小さい写真の長辺。拡大表示と作品詳細は LONG_EDGE を使う */
+const THUMB_EDGE = 1200;
 const CONCURRENCY = 4;
 
-type ImageCache = Record<string, { version: string; width: number; height: number }>;
+type ImageCache = Record<string, { version: string; width: number; height: number; thumbWidth?: number }>;
 
 async function main() {
   const config = kurocoConfigFromEnv();
@@ -92,17 +94,20 @@ async function main() {
 
   const toPhoto = async (key: string, url: string, version: string, alt: string): Promise<Photo> => {
     const file = path.join(PHOTO_DIR, `${key}.jpg`);
+    const thumbFile = path.join(PHOTO_DIR, `${key}.sm.jpg`);
     const hit = cache[key];
-    let size: { width: number; height: number };
-    if (hit && hit.version === version && existsSync(file)) {
+    let size: CachedSize;
+    if (hit && hit.version === version && existsSync(file) && (!hit.thumbWidth || existsSync(thumbFile))) {
       size = hit;
     } else {
-      size = await resizeTo(await loadImage(url), file);
+      size = await resizeTo(await loadImage(url), file, thumbFile);
       processed += 1;
     }
     nextCache[key] = { version, ...size };
     const v = createHash("sha1").update(version).digest("hex").slice(0, 8);
-    return { src: `/photos/${key}.jpg?v=${v}`, width: size.width, height: size.height, alt };
+    const photo: Photo = { src: `/photos/${key}.jpg?v=${v}`, width: size.width, height: size.height, alt };
+    if (size.thumbWidth) photo.thumb = { src: `/photos/${key}.sm.jpg?v=${v}`, width: size.thumbWidth };
+    return photo;
   };
 
   const siteWorks: Work[] = await mapLimit(works, CONCURRENCY, async (w) => ({
@@ -142,13 +147,24 @@ async function loadImage(url: string): Promise<Buffer> {
   }
 }
 
-async function resizeTo(input: Buffer, file: string) {
+type CachedSize = { width: number; height: number; thumbWidth?: number };
+
+async function resizeTo(input: Buffer, file: string, thumbFile: string): Promise<CachedSize> {
   const info = await sharp(input)
     .rotate() // 縦横の向き情報（EXIF）を反映
     .resize({ width: LONG_EDGE, height: LONG_EDGE, fit: "inside", withoutEnlargement: true })
     .jpeg({ quality: QUALITY, mozjpeg: true })
     .toFile(file);
-  return { width: info.width, height: info.height };
+  // 一覧用の小さい写真（元が十分に小さければ作らない）
+  if (Math.max(info.width, info.height) <= THUMB_EDGE * 1.2) {
+    await rm(thumbFile, { force: true });
+    return { width: info.width, height: info.height };
+  }
+  const thumb = await sharp(file)
+    .resize({ width: THUMB_EDGE, height: THUMB_EDGE, fit: "inside" })
+    .jpeg({ quality: QUALITY, mozjpeg: true })
+    .toFile(thumbFile);
+  return { width: info.width, height: info.height, thumbWidth: thumb.width };
 }
 
 async function readCache(): Promise<ImageCache> {
@@ -163,7 +179,7 @@ async function readCache(): Promise<ImageCache> {
 async function removeStale(keep: ImageCache) {
   for (const dir of ["works", "profile"]) {
     for (const name of await readdir(path.join(PHOTO_DIR, dir))) {
-      const key = `${dir}/${name.replace(/\.jpg$/, "")}`;
+      const key = `${dir}/${name.replace(/(\.sm)?\.jpg$/, "")}`;
       if (!keep[key]) await rm(path.join(PHOTO_DIR, dir, name));
     }
   }
