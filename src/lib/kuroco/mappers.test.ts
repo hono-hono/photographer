@@ -1,5 +1,13 @@
 import { describe, expect, it } from "vitest";
-import { decodeEntities, mapAchievements, mapCategories, mapProfile, mapWorks, pickMainVisual } from "./mappers";
+import {
+  decodeEntities,
+  mapAchievements,
+  mapCategories,
+  mapMainVisual,
+  mapProfile,
+  mapWorks,
+  pickMainVisual,
+} from "./mappers";
 import type { KurocoWork } from "./types";
 
 const work = (id: number, over: Partial<KurocoWork> = {}): KurocoWork => ({
@@ -9,8 +17,6 @@ const work = (id: number, over: Partial<KurocoWork> = {}): KurocoWork => ({
   contents_type: 15,
   photo: { url: `https://example.com/${id}.jpg` },
   alt: "説明",
-  mv: false,
-  mv_order: null,
   ...over,
 });
 
@@ -50,9 +56,9 @@ describe("mapCategories", () => {
 
 describe("mapWorks", () => {
   it("正しい作品を変換する", () => {
-    const { works, errors } = mapWorks([work(1, { mv: true, mv_order: 3 })], CATS);
+    const { works, errors } = mapWorks([work(1)], CATS);
     expect(errors).toEqual([]);
-    expect(works[0]).toMatchObject({ slug: "place-01", category: "works", alt: "説明", mvOrder: 3 });
+    expect(works[0]).toMatchObject({ id: 1, slug: "place-01", category: "works", alt: "説明" });
   });
 
   it("カテゴリ ID をスラッグに変える", () => {
@@ -67,10 +73,6 @@ describe("mapWorks", () => {
     const { works, errors } = mapWorks([work(1, { alt: "  " })], CATS);
     expect(errors).toEqual([]);
     expect(works[0].alt).toMatch(/^hono の写真（.+）$/);
-  });
-
-  it("MVに使わない作品は順番を無視する", () => {
-    expect(mapWorks([work(1, { mv: false, mv_order: 3 })], CATS).works[0].mvOrder).toBeNull();
   });
 
   it("スラッグの重複・形式、カテゴリ、写真の欠けを知らせる", () => {
@@ -92,22 +94,42 @@ describe("mapWorks", () => {
   });
 });
 
-describe("pickMainVisual", () => {
-  const ten = Array.from({ length: 10 }, (_, i) => ({ slug: `s${i}`, mvOrder: 10 - i }));
+describe("mapMainVisual / pickMainVisual", () => {
+  const works = Array.from({ length: 12 }, (_, i) => ({ id: i + 1, slug: `s${i + 1}` }));
+  const ten = Array.from({ length: 10 }, (_, i) => ({ label: `MV ${i + 1}`, workId: 10 - i }));
 
-  it("MVの順番で並べる", () => {
-    const { slugs, errors } = pickMainVisual(ten);
+  it("MV に登録した順で並べる", () => {
+    const { slugs, errors } = pickMainVisual(ten, works);
     expect(errors).toEqual([]);
-    expect(slugs[0]).toBe("s9");
+    expect(slugs.slice(0, 2)).toEqual(["s10", "s9"]);
+  });
+
+  it("Kuroco の関連項目から作品の topics_id を取り出す", () => {
+    const entries = mapMainVisual([
+      { topics_id: 32, subject: "MV 1", work: { module_type: "topics", module_id: 3, label: "水族館" } },
+      { topics_id: 33, subject: "MV 2", work: null },
+    ]);
+    expect(entries).toEqual([
+      { label: "MV 1", workId: 3 },
+      { label: "MV 2", workId: null },
+    ]);
   });
 
   it("10件でなければ知らせる", () => {
-    expect(pickMainVisual(ten.slice(0, 9)).errors[0]).toMatch(/9 件/);
+    expect(pickMainVisual(ten.slice(0, 9), works).errors[0]).toMatch(/9 件/);
   });
 
-  it("順番の重複を知らせる", () => {
-    const dup = ten.map((w, i) => (i === 0 ? { ...w, mvOrder: 1 } : w));
-    expect(pickMainVisual(dup).errors.join()).toMatch(/重複/);
+  it("作品の未選択・非公開・重なりを知らせる", () => {
+    const bad = [
+      ...ten.slice(0, 7),
+      { label: "空", workId: null },
+      { label: "非公開", workId: 99 },
+      { label: "重なり", workId: 10 },
+    ];
+    const errors = pickMainVisual(bad, works).errors.join("\n");
+    expect(errors).toMatch(/選ばれていません/);
+    expect(errors).toMatch(/非公開/);
+    expect(errors).toMatch(/同じ作品/);
   });
 });
 

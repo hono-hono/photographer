@@ -6,7 +6,7 @@ import {
   type CategoryDef,
 } from "@/lib/categories";
 import type { AchievementGroup } from "@/types/content";
-import type { KurocoAchievement, KurocoCategory, KurocoProfile, KurocoWork } from "./types";
+import type { KurocoAchievement, KurocoCategory, KurocoMainVisual, KurocoProfile, KurocoWork } from "./types";
 
 /**
  * Kuroco の生データ → サイト用のデータへの変換と検査。
@@ -15,14 +15,18 @@ import type { KurocoAchievement, KurocoCategory, KurocoProfile, KurocoWork } fro
 
 /** 写真を縮小する前の作品データ（画像はまだ Kuroco のURL） */
 export type WorkSource = {
+  /** Kuroco の topics_id（MV から作品を探すのに使う） */
+  id: number;
   slug: string;
   category: Category;
   alt: string;
   imageUrl: string;
   /** 画像が変わったかどうかの判定に使う */
   version: string;
-  mvOrder: number | null;
 };
+
+/** MV の1件（コンテンツ定義「MV」）。workId は選んだ作品の topics_id */
+export type MainVisualEntry = { label: string; workId: number | null };
 
 export type ProfileSource = {
   lead: string;
@@ -51,12 +55,6 @@ const clean = (v: unknown): string => (typeof v === "string" ? decodeEntities(v)
 
 function imageUrlOf(file: KurocoWork["photo"]): string {
   return file?.url_org || file?.url || "";
-}
-
-function toOrder(v: unknown): number | null {
-  if (v === null || v === undefined || v === "") return null;
-  const n = Number(v);
-  return Number.isFinite(n) ? n : null;
 }
 
 /** Kuroco の作品カテゴリ → サイトのタブ。並び順は Kuroco の表示順（大きい順）、同じなら登録順 */
@@ -129,35 +127,50 @@ export function mapWorks(
     if (!slug || !SLUG_PATTERN.test(slug) || !category || !imageUrl) continue;
 
     works.push({
+      id: Number(item.topics_id),
       slug,
       category,
       alt,
       imageUrl,
       version: `${imageUrl}|${item.update_ymdhi ?? ""}`,
-      mvOrder: item.mv ? toOrder(item.mv_order) : null,
     });
   }
   return { works, errors };
 }
 
-/** MVの作品を「MVの順番」で並べる。ちょうど10件で、順番が重複していないこと */
-export function pickMainVisual(works: Pick<WorkSource, "slug" | "mvOrder">[]): { slugs: string[]; errors: string[] } {
-  const errors: string[] = [];
-  const picked = works.filter((w) => w.mvOrder !== null);
-  const flagged = picked.length;
+export function mapMainVisual(raw: KurocoMainVisual[]): MainVisualEntry[] {
+  return raw.map((item) => {
+    const id = Number(item.work?.module_id);
+    return {
+      label: clean(item.subject) || `topics_id ${item.topics_id}`,
+      workId: Number.isFinite(id) && id > 0 ? id : null,
+    };
+  });
+}
 
-  if (flagged !== MV_COUNT) {
+/**
+ * MV の作品を、コンテンツ定義「MV」に登録した順で並べる。
+ * ちょうど10件で、どれも公開中の作品を選んでいて、同じ作品が重なっていないこと。
+ */
+export function pickMainVisual(
+  entries: MainVisualEntry[],
+  works: Pick<WorkSource, "id" | "slug">[],
+): { slugs: string[]; errors: string[] } {
+  const errors: string[] = [];
+  if (entries.length !== MV_COUNT) {
     errors.push(
-      `MVに使う作品が ${flagged} 件あります。ちょうど ${MV_COUNT} 件にしてください（「MVに使う」と「MVの順番」を確認）`,
+      `MV が ${entries.length} 件です。ちょうど ${MV_COUNT} 件にしてください（［コンテンツ定義］→「MV」の一覧）`,
     );
   }
-  const byOrder = new Map<number, string[]>();
-  for (const w of picked) byOrder.set(w.mvOrder!, [...(byOrder.get(w.mvOrder!) ?? []), w.slug]);
-  for (const [order, slugs] of byOrder) {
-    if (slugs.length > 1) errors.push(`MVの順番 ${order} が重複しています: ${slugs.join(", ")}`);
+  const slugById = new Map(works.map((w) => [w.id, w.slug]));
+  const slugs: string[] = [];
+  for (const e of entries) {
+    const slug = e.workId === null ? undefined : slugById.get(e.workId);
+    if (e.workId === null) errors.push(`MV「${e.label}」: 作品が選ばれていません`);
+    else if (!slug) errors.push(`MV「${e.label}」: 選んだ作品が非公開か、使えない状態です`);
+    else if (slugs.includes(slug)) errors.push(`MV「${e.label}」: 同じ作品（${slug}）がほかの MV でも選ばれています`);
+    else slugs.push(slug);
   }
-
-  const slugs = [...picked].sort((a, b) => a.mvOrder! - b.mvOrder!).map((w) => w.slug);
   return { slugs, errors };
 }
 
