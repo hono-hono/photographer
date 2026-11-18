@@ -202,7 +202,7 @@ Kuroco の Admin MCP（claude.ai のコネクタ「Kuroco Admin」）から作�
 
 | 項目 | Kuroco での種類 | Slug | 必須 | 説明 |
 |---|---|---|---|---|
-| タイトル | 標準項目 | `subject` | ○ | 管理用（例: MV 1 四国水族館） |
+| タイトル | 標準項目 | `subject` | ○ | 管理用。`MV01`〜`MV10`（番号＝並び順。作品名は入れない） |
 | 作品 | 関連情報選択（作品 ID 7 から選ぶ） | `work` | ○ | API では `{ module_type, module_id, label }`。`module_id` が作品の topics_id |
 
 - **並びは登録した順（topics_id の昇順）。** 入れ替えは「MV の1件を開いて作品を選び直す」
