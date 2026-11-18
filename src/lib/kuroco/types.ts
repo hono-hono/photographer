@@ -22,8 +22,11 @@ export type KurocoWork = KurocoBase & {
   contents_type_nm?: string;
   photo?: KurocoFile;
   alt?: string;
-  mv?: boolean | null;
-  mv_order?: number | string | null;
+};
+
+/** コンテンツ定義「MV」（ID 10）の1件。work に選んだ作品が入る */
+export type KurocoMainVisual = KurocoBase & {
+  work?: { module_type?: string; module_id?: number | string | null; label?: string } | null;
 };
 
 export type KurocoCategory = {

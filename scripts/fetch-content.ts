@@ -5,7 +5,7 @@
  * 2. 写真をダウンロードして長辺2400pxに縮小し、public/photos/ に保存する。幅と高さもここで読み取る
  * 3. ページが読み込むデータを .content/content.json に書き出す
  *
- * 問題（MVが10件でない、代替テキストが空など）があれば、内容を表示してビルドを止める。
+ * 問題（MVが10件でない、スラッグの重複など）があれば、内容を表示してビルドを止める。
  */
 import { createHash } from "node:crypto";
 import { existsSync } from "node:fs";
@@ -15,6 +15,7 @@ import sharp from "sharp";
 import {
   fetchAchievements,
   fetchCategories,
+  fetchMainVisual,
   fetchProfile,
   fetchWorks,
   kurocoConfigFromEnv,
@@ -22,9 +23,11 @@ import {
 import {
   mapAchievements,
   mapCategories,
+  mapMainVisual,
   mapProfile,
   mapWorks,
   pickMainVisual,
+  type MainVisualEntry,
   type ProfileSource,
   type WorkSource,
 } from "../src/lib/kuroco/mappers";
@@ -52,16 +55,18 @@ async function main() {
   let works: WorkSource[];
   let profile: ProfileSource;
   let achievements: AchievementGroup[];
+  let mvEntries: MainVisualEntry[];
   let source: SiteContent["source"];
   const errors: string[] = [];
 
   if (config) {
     console.log(`[content] Kuroco から取得します: ${config.baseUrl}/rcms-api/${config.apiId}/`);
-    const [rawCategories, rawWorks, rawAchievements, rawProfile] = await Promise.all([
+    const [rawCategories, rawWorks, rawAchievements, rawProfile, rawMainVisual] = await Promise.all([
       fetchCategories(config),
       fetchWorks(config),
       fetchAchievements(config),
       fetchProfile(config),
+      fetchMainVisual(config),
     ]);
     const c = mapCategories(rawCategories);
     const w = mapWorks(rawWorks, c.categories);
@@ -72,17 +77,18 @@ async function main() {
     works = w.works;
     achievements = a.groups;
     profile = p.profile!;
+    mvEntries = mapMainVisual(rawMainVisual);
     source = "kuroco";
   } else {
     if (required) {
       fail(["KUROCO_API_TOKEN が設定されていません（GitHub の Settings → Secrets に登録してください）"]);
     }
     console.warn("[content] KUROCO_API_TOKEN がないため、dummy-photos/ のダミーデータで作ります");
-    ({ categories, works, profile, achievements } = loadDummy());
+    ({ categories, works, profile, achievements, mvEntries } = loadDummy());
     source = "dummy";
   }
 
-  const mv = pickMainVisual(works ?? []);
+  const mv = pickMainVisual(mvEntries, works ?? []);
   errors.push(...mv.errors);
   if (errors.length) fail(errors);
 
