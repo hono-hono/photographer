@@ -431,6 +431,7 @@ gallery/[slug]/page.tsx       ← getWorks()（generateStaticParams でも使う
 - 下線: トップでは `IntersectionObserver` で今見えているセクションを判定し、ナビの項目に `aria-current="location"` を付けて下線を表示。Gallery・作品詳細では「Gallery」に下線
 - 下線は左から右へ滑らかに伸びる（`transform: scaleX` の変化。仕様の「動きは一方向のみ」）
 - SPメニュー: ボタンに `aria-expanded` と `aria-controls`。項目を選ぶ、Escを押す、のどちらでも閉じる
+- **トップでは MV に重なっている間だけヘッダーを透かす（2026-11-20）。** 文字を白にし、上端だけうっすら暗くして読みやすくする。MV はヘッダーの下に潜り込ませて画面の高さいっぱいに出す。MV を過ぎる・SP でメニューを開くと、いつもの背景色に戻る（`Header` はクライアント部品）
 
 ### 7.6 お問い合わせ（`ContactForm` → Kuroco フォーム）
 
