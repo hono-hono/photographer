@@ -1,14 +1,16 @@
-/* セクション間の余白はトップの .inner の gap で取る */
+.section {
+  margin-top: var(--section-gap);
+}
 
-/* PC: 左にポートレート（480×600）、右に見出しと文章 */
+/* PC: 左にポートレート、右に見出しと文章 */
 .layout {
   display: grid;
-  grid-template-columns: var(--profile-col) minmax(0, 1fr);
+  grid-template-columns: minmax(280px, 400px) minmax(0, 720px);
   grid-template-areas:
     "portrait heading"
     "portrait body";
   grid-template-rows: auto 1fr;
-  column-gap: var(--profile-gap);
+  column-gap: 80px;
   align-items: start;
 }
 
@@ -23,15 +25,14 @@
 .portraitImg {
   width: 100%;
   height: auto;
-  aspect-ratio: 4 / 5;
+  aspect-ratio: 2 / 3;
   object-fit: cover;
   background: var(--color-tile);
 }
 
 .body {
   grid-area: body;
-  max-width: 720px;
-  padding-top: 32px;
+  padding-top: 40px;
 }
 
 .lead {
@@ -41,18 +42,16 @@
   letter-spacing: 0.04em;
 }
 
-/* 「写真歴」「実績」の小さな見出し */
 .subheading {
-  margin: 40px 0 12px;
-  font-size: 12px;
-  font-weight: 400;
+  margin: 48px 0 12px;
+  font-size: 13px;
+  font-weight: 500;
   line-height: 1.6;
   letter-spacing: 0.08em;
-  color: var(--color-label);
 }
 
 .achievementsHeading {
-  margin: 48px 0 20px;
+  margin: 56px 0 24px;
 }
 
 .text {
@@ -60,7 +59,14 @@
   line-height: 1.9;
 }
 
-/* SP: 見出し → 横長（16:9）のポートレート → 文章 */
+@media (max-width: 1023px) and (min-width: 768px) {
+  .layout {
+    column-gap: 48px;
+    grid-template-columns: minmax(220px, 320px) minmax(0, 1fr);
+  }
+}
+
+/* SP: 見出し → 横長のポートレート → 文章 */
 @media (max-width: 767px) {
   .layout {
     grid-template-columns: minmax(0, 1fr);
@@ -76,12 +82,12 @@
   }
 
   .portraitImg {
-    aspect-ratio: 16 / 9;
+    aspect-ratio: 3 / 2;
     object-position: center 30%;
   }
 
   .body {
-    padding-top: 28px;
+    padding-top: 32px;
   }
 
   .lead {
@@ -89,10 +95,10 @@
   }
 
   .subheading {
-    margin-top: 32px;
+    margin-top: 40px;
   }
 
   .achievementsHeading {
-    margin: 40px 0 16px;
+    margin: 48px 0 20px;
   }
 }

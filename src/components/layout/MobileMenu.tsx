@@ -48,12 +48,7 @@ export function MobileMenu() {
         aria-controls="sp-menu"
         onClick={() => setOpen((v) => !v)}
       >
-        <span className={styles.icon} aria-hidden="true">
-          <span />
-          <span />
-          <span />
-        </span>
-        {open ? "Close / 閉じる" : "Menu / メニュー"}
+        {open ? "Close" : "Menu"}
       </button>
       <nav id="sp-menu" ref={panelRef} aria-label="メインメニュー" className={styles.panel} hidden={!open}>
         <ul className={styles.list}>
@@ -66,7 +61,6 @@ export function MobileMenu() {
                 onClick={() => setOpen(false)}
               >
                 {item.label}
-                <span className={styles.ja}>{item.ja}</span>
               </Link>
             </li>
           ))}

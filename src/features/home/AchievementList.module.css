@@ -1,16 +1,15 @@
 .groups {
   display: flex;
   flex-direction: column;
-  gap: 28px;
+  gap: 32px;
 }
 
 .label {
   margin-bottom: 8px;
-  font-size: 12px;
-  font-weight: 400;
+  font-size: 13px;
+  font-weight: 500;
   line-height: 1.6;
   letter-spacing: 0.08em;
-  color: var(--color-label);
 }
 
 .list {
@@ -19,7 +18,7 @@
 
 .row {
   display: grid;
-  grid-template-columns: 112px minmax(0, 1fr);
+  grid-template-columns: 7.5rem minmax(0, 1fr);
   gap: 16px;
   padding: 12px 0;
   border-top: 1px solid var(--color-line);
@@ -28,21 +27,12 @@
 }
 
 .date {
-  color: var(--color-label);
+  color: var(--color-ink-soft);
 }
 
-/* SP は年月を上に小さく、内容をその下に */
 @media (max-width: 767px) {
   .row {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 2px;
-  }
-
-  .date {
-    font-size: 12px;
-  }
-
-  .date:empty {
-    display: none;
+    grid-template-columns: 6.5rem minmax(0, 1fr);
+    gap: 12px;
   }
 }

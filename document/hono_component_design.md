@@ -328,7 +328,7 @@ export type AchievementGroup = { label: string; items: Achievement[] };
 
 | 部品 | 種類 | 役割 |
 |---|---|---|
-| `MainVisual` | クライアント | 画面幅いっぱいの MV。10枚を6秒ごとにフェードで切り替え（点で選べる。ホバー・フォーカス中・タブが裏・動きを減らす設定では止まる）。写真は `contain`。押すと `Lightbox` |
+| `MainVisual` | クライアント | 画面幅いっぱいの MV。10枚を6秒ごとにフェードで切り替え（点で選べる。ホバー・フォーカス中・タブが裏・動きを減らす設定では止まる）。写真は `cover`（中央基準でトリミング、2026-11-20 から）。押すと `Lightbox` で全体 |
 | `Themes` / `TagGroup` | サーバー / クライアント | テーマごとに4枚（PC 1行・SP 2枚ずつ）と「すべて見る →」（`/gallery?tag=`）。押すと `Lightbox` |
 | `ProfileSection` / `AchievementList` | サーバー | Profile の配置と実績の行リスト |
 | `GalleryTabs` | クライアント | タブ、絞り込み、URLとの連動。`?tag=` があればテーマでも絞り、「# 名前 ×」で外す |
