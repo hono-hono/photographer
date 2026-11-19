@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 // フォントはサイト自身から配信する（Google への通信なし）。使う太さだけ読み込む
 import "@fontsource/noto-serif-jp/400.css";
+import "@fontsource/noto-serif-jp/500.css";
 import "@fontsource/noto-sans-jp/400.css";
 import "@fontsource/noto-sans-jp/500.css";
 import "@/styles/tokens.css";

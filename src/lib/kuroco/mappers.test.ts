@@ -5,6 +5,7 @@ import {
   mapCategories,
   mapMainVisual,
   mapProfile,
+  mapTags,
   mapWorks,
   pickMainVisual,
 } from "./mappers";
@@ -156,5 +157,26 @@ describe("mapProfile", () => {
 describe("decodeEntities", () => {
   it("文字参照を戻す", () => {
     expect(decodeEntities("TODAY&#039;S &amp; &lt;b&gt;")).toBe("TODAY'S & <b>");
+  });
+});
+
+describe("mapTags / 作品のタグ", () => {
+  const raw = [
+    { tag_id: 3, tag_nm: "人の営み", ext_col_01: "Daily life", ext_col_02: "daily-life", weight: 20 },
+    { tag_id: 2, tag_nm: "廃墟", ext_col_01: "Ruins", ext_col_02: "ruins", weight: 30 },
+    { tag_id: 9, tag_nm: "空", ext_col_01: "", ext_col_02: "" },
+  ];
+
+  it("並び順の大きい順にし、スラッグが空のタグを知らせる", () => {
+    const { tags, errors } = mapTags(raw);
+    expect(tags.map((t) => t.slug)).toEqual(["ruins", "daily-life"]);
+    expect(tags[0]).toMatchObject({ name: "廃墟", en: "Ruins" });
+    expect(errors[0]).toMatch(/スラッグ/);
+  });
+
+  it("作品に付いたタグをスラッグにする（Themes 以外のタグは無視）", () => {
+    const { tags } = mapTags(raw);
+    const { works } = mapWorks([work(1, { tags: [{ tag_id: 2 }, { tag_id: 99 }] })], CATS, tags);
+    expect(works[0].tags).toEqual(["ruins"]);
   });
 });

@@ -16,6 +16,7 @@ import {
   fetchAchievements,
   fetchCategories,
   fetchMainVisual,
+  fetchTags,
   fetchProfile,
   fetchWorks,
   kurocoConfigFromEnv,
@@ -25,6 +26,7 @@ import {
   mapCategories,
   mapMainVisual,
   mapProfile,
+  mapTags,
   mapWorks,
   pickMainVisual,
   type MainVisualEntry,
@@ -32,7 +34,7 @@ import {
   type WorkSource,
 } from "../src/lib/kuroco/mappers";
 import type { CategoryDef } from "../src/lib/categories";
-import type { AchievementGroup, Photo, SiteContent, Work } from "../src/types/content";
+import type { AchievementGroup, Photo, SiteContent, ThemeTag, Work } from "../src/types/content";
 import { loadDummy } from "./dummy-content";
 
 const ROOT = process.cwd();
@@ -56,35 +58,39 @@ async function main() {
   let profile: ProfileSource;
   let achievements: AchievementGroup[];
   let mvEntries: MainVisualEntry[];
+  let themes: ThemeTag[];
   let source: SiteContent["source"];
   const errors: string[] = [];
 
   if (config) {
     console.log(`[content] Kuroco から取得します: ${config.baseUrl}/rcms-api/${config.apiId}/`);
-    const [rawCategories, rawWorks, rawAchievements, rawProfile, rawMainVisual] = await Promise.all([
+    const [rawCategories, rawWorks, rawAchievements, rawProfile, rawMainVisual, rawTags] = await Promise.all([
       fetchCategories(config),
       fetchWorks(config),
       fetchAchievements(config),
       fetchProfile(config),
       fetchMainVisual(config),
+      fetchTags(config),
     ]);
     const c = mapCategories(rawCategories);
-    const w = mapWorks(rawWorks, c.categories);
+    const t = mapTags(rawTags);
+    const w = mapWorks(rawWorks, c.categories, t.tags);
     const a = mapAchievements(rawAchievements);
     const p = mapProfile(rawProfile);
-    errors.push(...c.errors, ...w.errors, ...a.errors, ...p.errors);
+    errors.push(...c.errors, ...t.errors, ...w.errors, ...a.errors, ...p.errors);
     categories = c.categories.map(({ slug, label }) => ({ slug, label }));
     works = w.works;
     achievements = a.groups;
     profile = p.profile!;
     mvEntries = mapMainVisual(rawMainVisual);
+    themes = t.tags.map(({ slug, name, en }) => ({ slug, name, en }));
     source = "kuroco";
   } else {
     if (required) {
       fail(["KUROCO_API_TOKEN が設定されていません（GitHub の Settings → Secrets に登録してください）"]);
     }
     console.warn("[content] KUROCO_API_TOKEN がないため、dummy-photos/ のダミーデータで作ります");
-    ({ categories, works, profile, achievements, mvEntries } = loadDummy());
+    ({ categories, works, profile, achievements, mvEntries, themes } = loadDummy());
     source = "dummy";
   }
 
@@ -121,6 +127,7 @@ async function main() {
   const siteWorks: Work[] = await mapLimit(works, CONCURRENCY, async (w) => ({
     slug: w.slug,
     category: w.category,
+    tags: w.tags,
     photo: await toPhoto(`works/${w.slug}`, w.imageUrl, w.version, w.alt),
   }));
   const portrait = await toPhoto("profile/portrait", profile.portraitUrl, profile.version, profile.portraitAlt);
@@ -132,6 +139,8 @@ async function main() {
     generatedAt: new Date().toISOString(),
     // 作品が1件もないカテゴリはタブに出さない
     categories: categories.filter((c) => siteWorks.some((w) => w.category === c.slug)),
+    // 作品が1件もないタグは Themes に出さない
+    themes: themes.filter((t) => siteWorks.some((w) => w.tags.includes(t.slug))),
     works: siteWorks,
     mainVisual: mv.slugs,
     profile: { lead: profile.lead, history: profile.history, portrait },

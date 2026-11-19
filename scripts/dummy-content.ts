@@ -4,7 +4,7 @@
  */
 import { readFileSync } from "node:fs";
 import path from "node:path";
-import type { AchievementGroup } from "../src/types/content";
+import type { AchievementGroup, ThemeTag } from "../src/types/content";
 import type { MainVisualEntry, ProfileSource, WorkSource } from "../src/lib/kuroco/mappers";
 import type { CategoryDef } from "../src/lib/categories";
 
@@ -15,6 +15,12 @@ type Manifest = {
 };
 
 const DIR = path.join(process.cwd(), "dummy-photos");
+
+const DUMMY_THEMES: ThemeTag[] = [
+  { slug: "ruins", name: "廃墟", en: "Ruins" },
+  { slug: "daily-life", name: "人の営み", en: "Daily life" },
+  { slug: "abandoned-rails", name: "廃線", en: "Abandoned rails" },
+];
 
 const DUMMY_CATEGORIES: CategoryDef[] = [
   { slug: "works", label: "Works" },
@@ -28,6 +34,7 @@ export function loadDummy(): {
   profile: ProfileSource;
   achievements: AchievementGroup[];
   mvEntries: MainVisualEntry[];
+  themes: ThemeTag[];
 } {
   const manifest = JSON.parse(readFileSync(path.join(DIR, "manifest.json"), "utf8")) as Manifest;
   const works: WorkSource[] = manifest.works.map((w, i) => {
@@ -37,6 +44,8 @@ export function loadDummy(): {
       id: i + 1,
       slug: w.slug,
       category: w.category,
+      // 手元での確認用に、3つのテーマへ順番に振り分ける
+      tags: [DUMMY_THEMES[i % DUMMY_THEMES.length].slug],
       alt: w.alt,
       imageUrl: path.join(DIR, w.file),
       version: `dummy|${w.file}`,
@@ -52,6 +61,7 @@ export function loadDummy(): {
     categories: DUMMY_CATEGORIES,
     works,
     mvEntries,
+    themes: DUMMY_THEMES,
     profile: {
       lead: "そこにいた人の気配や、営まれていた暮らしを想像できる風景に惹かれています。写真を見る人にも、その場所に流れていた時間を感じてもらえたらうれしいです。",
       history:

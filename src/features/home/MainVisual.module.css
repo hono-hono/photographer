@@ -1,0 +1,119 @@
+/* 画面幅いっぱい。高さは PC = 画面の高さ − ヘッダー、SP = 最大 700px */
+.mv {
+  position: relative;
+  width: 100%;
+  height: calc(100svh - var(--header-h));
+  min-height: 480px;
+  max-height: 1200px;
+  background: var(--color-ink-soft);
+  overflow: hidden;
+}
+
+.slides {
+  position: absolute;
+  inset: 0;
+}
+
+.slide {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: zoom-in;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 1.2s var(--ease),
+    visibility 0s linear 1.2s;
+}
+
+.slide[data-active] {
+  opacity: 1;
+  visibility: visible;
+  transition:
+    opacity 1.2s var(--ease),
+    visibility 0s;
+}
+
+.slide:focus-visible {
+  outline: 2px solid var(--color-surface);
+  outline-offset: -6px;
+}
+
+/* 切らずに全体を見せる */
+.img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.dots {
+  position: absolute;
+  left: 50%;
+  bottom: 32px;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+}
+
+/* 見た目は 24×2 の線。押せる範囲は 44px 確保する */
+.dot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 44px;
+  margin: -21px 0;
+  padding: 0;
+  border: none;
+  background: none;
+}
+
+.bar {
+  display: block;
+  width: 24px;
+  height: 2px;
+  background: rgb(255 255 255 / 0.4);
+  transition: background-color 0.3s var(--ease);
+}
+
+.dot[aria-current] .bar {
+  background: #fff;
+}
+
+.dot:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+@media (hover: hover) {
+  .dot:hover .bar {
+    background: rgb(255 255 255 / 0.8);
+  }
+}
+
+@media (max-width: 767px) {
+  .mv {
+    height: min(700px, calc(100svh - var(--header-h)));
+    min-height: 420px;
+  }
+
+  .dots {
+    bottom: 24px;
+    gap: 4px;
+  }
+
+  .bar {
+    width: 16px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .slide,
+  .slide[data-active] {
+    transition: none;
+  }
+}

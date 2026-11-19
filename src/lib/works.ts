@@ -39,3 +39,8 @@ export function workHref(slug: string, filter: CategoryFilter): string {
 export function galleryHref(filter: CategoryFilter): string {
   return `/gallery?category=${filter}`;
 }
+
+/** タグで絞り込んだ Gallery の URL（トップの Themes の「すべて見る」） */
+export function tagGalleryHref(tag: string): string {
+  return `/gallery?tag=${tag}`;
+}

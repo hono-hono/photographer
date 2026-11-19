@@ -22,6 +22,18 @@ export type KurocoWork = KurocoBase & {
   contents_type_nm?: string;
   photo?: KurocoFile;
   alt?: string;
+  /** 作品に付けたタグ（works エンドポイントの get_tag_flg で返る） */
+  tags?: { tag_id: number | string; tag_nm?: string; tag_category_id?: number | string }[] | null;
+};
+
+/** タグカテゴリ「Themes」（ID 5）のタグ。項目1 = 英語名、項目2 = スラッグ */
+export type KurocoTag = {
+  tag_id: number | string;
+  tag_nm: string;
+  ext_col_01?: string | null;
+  ext_col_02?: string | null;
+  weight?: number | string | null;
+  tag_weight?: number | string | null;
 };
 
 /** コンテンツ定義「MV」（ID 10）の1件。work に選んだ作品が入る */

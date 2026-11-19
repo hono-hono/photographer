@@ -7,7 +7,7 @@ import { ALL_FILTER, parseCategoryFilter, type CategoryDef, type CategoryFilter 
 import { rememberGallery, takeGalleryScroll } from "@/lib/navigation";
 import { GALLERY_TARGET, groupRows } from "@/lib/rows";
 import { filterWorks, workHref } from "@/lib/works";
-import type { Work } from "@/types/content";
+import type { ThemeTag, Work } from "@/types/content";
 import styles from "./GalleryTabs.module.css";
 
 /**
@@ -15,17 +15,30 @@ import styles from "./GalleryTabs.module.css";
  * - URL の ?category= と連動する（押すたびに履歴は増やさず、置き換える）
  * - 切り替えは演出なしで、瞬時に絞り込む
  * - ARIA の tablist / tab / tabpanel。←→ でタブ間を移動、Home / End で先頭・末尾へ
+ * - ?tag= があればそのテーマ（Kuroco のタグ）でも絞る。タブを切り替えてもタグは残し、「×」で外す
  */
-export function GalleryTabs({ works, categories }: { works: Work[]; categories: CategoryDef[] }) {
+export function GalleryTabs({
+  works,
+  categories,
+  themes = [],
+}: {
+  works: Work[];
+  categories: CategoryDef[];
+  themes?: ThemeTag[];
+}) {
   // タブは「All」＋ Kuroco のカテゴリ（表示順）
   const tabs: CategoryDef[] = [ALL_FILTER, ...categories];
   const [filter, setFilter] = useState<CategoryFilter>("all");
+  const [tag, setTag] = useState<ThemeTag | null>(null);
   const [ready, setReady] = useState(false);
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
   // 静的に書き出した HTML は All の状態。ブラウザで URL を読んでから絞り込む
   useLayoutEffect(() => {
-    setFilter(parseCategoryFilter(new URLSearchParams(window.location.search).get("category"), categories));
+    const params = new URLSearchParams(window.location.search);
+    setFilter(parseCategoryFilter(params.get("category"), categories));
+    // 知らないタグは無視する（全件を見せる）
+    setTag(themes.find((t) => t.slug === params.get("tag")) ?? null);
     setReady(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps -- 最初の1回だけ URL を読む
   }, []);
@@ -43,6 +56,13 @@ export function GalleryTabs({ works, categories }: { works: Work[]; categories: 
     url.searchParams.set("category", next);
     window.history.replaceState(window.history.state, "", url);
     if (focus) tabRefs.current[tabs.findIndex((t) => t.slug === next)]?.focus();
+  };
+
+  const clearTag = () => {
+    setTag(null);
+    const url = new URL(window.location.href);
+    url.searchParams.delete("tag");
+    window.history.replaceState(window.history.state, "", url);
   };
 
   const onKeyDown = (e: React.KeyboardEvent, index: number) => {
@@ -66,7 +86,7 @@ export function GalleryTabs({ works, categories }: { works: Work[]; categories: 
     select(tabs[to].slug, true);
   };
 
-  const shown = filterWorks(works, filter);
+  const shown = filterWorks(works, filter).filter((w) => !tag || w.tags?.includes(tag.slug));
   const ratios = shown.map((w) => w.photo.width / w.photo.height);
 
   return (
@@ -96,6 +116,20 @@ export function GalleryTabs({ works, categories }: { works: Work[]; categories: 
         })}
       </div>
 
+      {tag && (
+        <div className={styles.tagBar}>
+          <span className={styles.tagLabel}>テーマで絞り込み中</span>
+          <button type="button" className={styles.tagChip} onClick={clearTag}>
+            <span aria-hidden="true"># </span>
+            {tag.name}
+            <span className={styles.tagClear} aria-hidden="true">
+              ×
+            </span>
+            <span className="visually-hidden">（絞り込みを外す）</span>
+          </button>
+        </div>
+      )}
+
       <div
         id="gallery-panel"
         role="tabpanel"
@@ -107,7 +141,7 @@ export function GalleryTabs({ works, categories }: { works: Work[]; categories: 
           <p className={styles.empty}>まだ写真がありません。</p>
         ) : (
           <JustifiedRows
-            key={filter}
+            key={`${filter}-${tag?.slug ?? ""}`}
             ratios={ratios}
             pc={groupRows(ratios, GALLERY_TARGET.pc)}
             sp={groupRows(ratios, GALLERY_TARGET.sp)}
