@@ -6,7 +6,7 @@
   --color-ink: #1c1c1a;
   --color-ink-soft: #4a4a47;
   --color-muted: #8c8c89;
-  /* 小さな見出し・日付・未選択のタブなど（2026-11-19 のデザインで追加） */
+  /* 小さな見出し・日付・未選択のタブなど（Themes・テーマの絞り込みで使う） */
   --color-label: #6b6b68;
   --color-line: #d9d9d6;
   --color-tile: #f1f1ef;
@@ -21,9 +21,6 @@
   --header-h: 48px;
   --radius-button: 10px;
   --content-max: 1440px;
-  /* トップの Profile の左の列（ポートレート）と列の間。Contact もこの右の列にそろえる */
-  --profile-col: 480px;
-  --profile-gap: 96px;
 
   /* Font */
   --font-serif: "Noto Serif JP", "Hiragino Mincho ProN", "Yu Mincho", serif;
@@ -40,13 +37,5 @@
     --section-gap: 72px;
     --photo-gap: 6px;
     --header-h: 44px;
-  }
-}
-
-/* タブレット幅ではポートレートの列を細くする */
-@media (max-width: 1199px) and (min-width: 768px) {
-  :root {
-    --profile-col: 320px;
-    --profile-gap: 56px;
   }
 }

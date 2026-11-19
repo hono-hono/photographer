@@ -44,11 +44,12 @@
   outline-offset: -6px;
 }
 
-/* 切らずに全体を見せる */
+/* 枠いっぱいに広げ、はみ出た部分は切る（中央を基準）。拡大表示では全体が見える */
 .img {
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  object-fit: cover;
+  object-position: center;
 }
 
 .dots {

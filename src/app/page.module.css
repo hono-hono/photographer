@@ -1,11 +1,8 @@
-/* MV の下。セクションの間は --section-gap（PC 120 / SP 72）でそろえる */
+/* MV の下。Profile・Contact・Themes はそれぞれ margin-top: var(--section-gap) で間を取る */
 .inner {
   max-width: var(--content-max);
   margin: 0 auto;
-  padding: 64px var(--margin) 0; /* 下の余白はフッターの margin-top（--section-gap）で取る */
-  display: flex;
-  flex-direction: column;
-  gap: var(--section-gap);
+  padding: 56px var(--margin) 0;
 }
 
 .more {
@@ -15,6 +12,6 @@
 
 @media (max-width: 767px) {
   .inner {
-    padding: 40px var(--margin) 0;
+    padding-top: 40px;
   }
 }

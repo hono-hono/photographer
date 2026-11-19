@@ -21,7 +21,6 @@ export function NavLinks() {
                 aria-current={isActive ? (item.key === "gallery" ? "page" : "location") : undefined}
               >
                 {item.label}
-                <span className={styles.ja}>{item.ja}</span>
               </Link>
             </li>
           );

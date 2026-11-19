@@ -1,15 +1,5 @@
-/* PC は Profile の右の列にそろえて、幅 480px */
 .section {
-  width: 100%;
-  max-width: calc(var(--profile-col) + var(--profile-gap) + 480px);
-  padding-left: calc(var(--profile-col) + var(--profile-gap));
-}
-
-@media (max-width: 767px) {
-  .section {
-    max-width: none;
-    padding-left: 0;
-  }
+  margin-top: var(--section-gap);
 }
 
 .intro {

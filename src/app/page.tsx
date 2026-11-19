@@ -14,7 +14,7 @@ export default function HomePage() {
       <MainVisual works={getMainVisual()} />
       <div className={styles.inner}>
         <div className={styles.more}>
-          <Button variant="soft" href={galleryHref("all")}>
+          <Button variant="solid" href={galleryHref("all")}>
             すべての写真を見る<span aria-hidden="true">→</span>
           </Button>
         </div>
