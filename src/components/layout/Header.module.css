@@ -1,10 +1,46 @@
 .header {
+  /* ナビ・メニューの文字色。MV に重なっている間は白にする */
+  --header-fg: var(--color-ink);
+  --header-fg-soft: var(--color-ink-soft);
   position: sticky;
   top: 0;
   z-index: 20;
   height: var(--header-h);
   background: var(--color-bg);
   border-bottom: 1px solid var(--color-line);
+  transition:
+    background-color 0.4s var(--ease),
+    border-color 0.4s var(--ease);
+}
+
+/* トップで MV に重なっている間（SP でメニューを開いたときは、いつもの背景に戻す） */
+.header[data-overlay]:not(:has([aria-expanded="true"])) {
+  --header-fg: #fff;
+  --header-fg-soft: rgb(255 255 255 / 0.85);
+  background: transparent;
+  border-bottom-color: transparent;
+}
+
+/* 明るい写真でも文字が読めるよう、上端だけうっすら暗くする */
+.header::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 -24px;
+  background: linear-gradient(rgb(0 0 0 / 0.28), rgb(0 0 0 / 0));
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s var(--ease);
+}
+
+.header[data-overlay]:not(:has([aria-expanded="true"]))::before {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .header,
+  .header::before {
+    transition: none;
+  }
 }
 
 .inner {
@@ -24,8 +60,9 @@
   font-weight: 400;
   line-height: 1;
   letter-spacing: 0.14em;
-  color: var(--color-ink);
+  color: var(--header-fg);
   text-decoration: none;
+  transition: color 0.4s var(--ease);
 }
 
 @media (max-width: 767px) {

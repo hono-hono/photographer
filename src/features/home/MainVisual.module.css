@@ -1,8 +1,9 @@
-/* 画面幅いっぱい。高さは PC = 画面の高さ − ヘッダー、SP = 最大 700px */
+/* 画面幅いっぱい。ヘッダーの下に潜り込ませ、画面の高さいっぱいに出す（SP は最大 700px） */
 .mv {
   position: relative;
   width: 100%;
-  height: calc(100svh - var(--header-h));
+  margin-top: calc(var(--header-h) * -1);
+  height: 100svh;
   min-height: 480px;
   max-height: 1200px;
   background: var(--color-ink-soft);
@@ -98,7 +99,7 @@
 
 @media (max-width: 767px) {
   .mv {
-    height: min(700px, calc(100svh - var(--header-h)));
+    height: min(700px, 100svh);
     min-height: 420px;
   }
 

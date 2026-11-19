@@ -54,6 +54,7 @@ export function MainVisual({ works }: { works: Work[] }) {
   return (
     <section
       className={styles.mv}
+      data-mv
       aria-roledescription="カルーセル"
       aria-label="代表作"
       onMouseEnter={() => setHovered(true)}

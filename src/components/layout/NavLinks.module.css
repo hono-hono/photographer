@@ -10,7 +10,7 @@
   font-size: 13px;
   line-height: 1.4;
   letter-spacing: 0.06em;
-  color: var(--color-ink-soft);
+  color: var(--header-fg-soft, var(--color-ink-soft));
   text-decoration: none;
   transition: color 0.3s var(--ease);
 }
@@ -23,14 +23,14 @@
   right: 0;
   bottom: 0;
   height: 1px;
-  background: var(--color-ink);
+  background: var(--header-fg, var(--color-ink));
   transform: scaleX(0);
   transform-origin: left center;
   transition: transform 0.4s var(--ease);
 }
 
 .link[aria-current] {
-  color: var(--color-ink);
+  color: var(--header-fg, var(--color-ink));
 }
 
 .link[aria-current]::after {
@@ -39,7 +39,7 @@
 
 @media (hover: hover) {
   .link:hover {
-    color: var(--color-ink);
+    color: var(--header-fg, var(--color-ink));
   }
 }
 
