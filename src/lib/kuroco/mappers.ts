@@ -6,7 +6,7 @@ import {
   type CategoryDef,
 } from "@/lib/categories";
 import type { AchievementGroup } from "@/types/content";
-import type { KurocoAchievement, KurocoCategory, KurocoMainVisual, KurocoProfile, KurocoWork } from "./types";
+import type { KurocoAchievement, KurocoCategory, KurocoMainVisual, KurocoProfile, KurocoTag, KurocoWork } from "./types";
 
 /**
  * Kuroco の生データ → サイト用のデータへの変換と検査。
@@ -19,6 +19,8 @@ export type WorkSource = {
   id: number;
   slug: string;
   category: Category;
+  /** Themes のタグのスラッグ */
+  tags: string[];
   alt: string;
   imageUrl: string;
   /** 画像が変わったかどうかの判定に使う */
@@ -91,10 +93,34 @@ export function mapCategories(raw: KurocoCategory[]): {
   return { categories, errors };
 }
 
+/** Kuroco のタグ（Themes） → サイトのテーマ。並び順はタグの並び順（大きい順）、同じなら ID 順 */
+export function mapTags(raw: KurocoTag[]): { tags: { id: number; slug: string; name: string; en: string }[]; errors: string[] } {
+  const errors: string[] = [];
+  const seen = new Set<string>();
+  const weight = (t: KurocoTag) => Number(t.weight ?? t.tag_weight ?? 0) || 0;
+  const sorted = [...raw].sort((a, b) => weight(b) - weight(a) || Number(a.tag_id) - Number(b.tag_id));
+  const tags: { id: number; slug: string; name: string; en: string }[] = [];
+  for (const t of sorted) {
+    const name = clean(t.tag_nm);
+    const slug = clean(t.ext_col_02 ?? "");
+    const en = clean(t.ext_col_01 ?? "");
+    const label = `タグ「${name || t.tag_id}」`;
+    if (!slug) errors.push(`${label}: 項目2（スラッグ）が空です（URL に使うので、英小文字で入れてください。例: ruins）`);
+    else if (!SLUG_PATTERN.test(slug)) errors.push(`${label}: スラッグ「${slug}」は英小文字・数字・ハイフンだけにしてください`);
+    else if (seen.has(slug)) errors.push(`${label}: スラッグ「${slug}」がほかのタグと重複しています`);
+    if (!slug || !SLUG_PATTERN.test(slug) || seen.has(slug)) continue;
+    seen.add(slug);
+    tags.push({ id: Number(t.tag_id), slug, name, en });
+  }
+  return { tags, errors };
+}
+
 export function mapWorks(
   raw: KurocoWork[],
   categories: { id: number; slug: Category; label?: string }[],
+  tags: { id: number; slug: string }[] = [],
 ): { works: WorkSource[]; errors: string[] } {
+  const tagSlugById = new Map(tags.map((t) => [t.id, t.slug]));
   const errors: string[] = [];
   const works: WorkSource[] = [];
   const seen = new Set<string>();
@@ -130,6 +156,9 @@ export function mapWorks(
       id: Number(item.topics_id),
       slug,
       category,
+      tags: (item.tags ?? [])
+        .map((t) => tagSlugById.get(Number(t.tag_id)))
+        .filter((s): s is string => Boolean(s)),
       alt,
       imageUrl,
       version: `${imageUrl}|${item.update_ymdhi ?? ""}`,

@@ -4,6 +4,7 @@ import type {
   KurocoList,
   KurocoMainVisual,
   KurocoProfile,
+  KurocoTag,
   KurocoWork,
 } from "./types";
 
@@ -78,3 +79,4 @@ export const fetchWorks = (c: KurocoConfig) => getList<KurocoWork>(c, "works");
 export const fetchAchievements = (c: KurocoConfig) => getList<KurocoAchievement>(c, "achievements");
 export const fetchProfile = (c: KurocoConfig) => getList<KurocoProfile>(c, "profile");
 export const fetchMainVisual = (c: KurocoConfig) => getList<KurocoMainVisual>(c, "mainvisual");
+export const fetchTags = (c: KurocoConfig) => getList<KurocoTag>(c, "tags");

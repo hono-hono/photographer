@@ -3,24 +3,29 @@
   align-items: center;
   justify-content: center;
   gap: 12px;
-  min-height: 48px;
-  padding: 0 32px;
+  min-height: 52px;
+  padding: 0 40px;
   border: none;
   border-radius: var(--radius-button);
-  font-size: 14px;
+  font-size: 15px;
+  font-weight: 500;
   line-height: 1.4;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
   text-decoration: none;
-  transition: background-color 0.3s var(--ease);
+  transition:
+    background-color 0.3s var(--ease),
+    color 0.3s var(--ease);
 }
 
-.tile {
-  background: var(--color-tile);
+/* 白地に 1.5px の黒い枠。ホバーで黒地に白文字 */
+.soft {
+  background: var(--color-surface);
   color: var(--color-ink);
+  box-shadow: inset 0 0 0 1.5px var(--color-ink);
 }
 
 .solid {
-  padding: 0 40px;
+  padding: 0 48px;
   background: var(--color-ink);
   color: var(--color-bg);
 }
@@ -31,8 +36,9 @@
 }
 
 @media (hover: hover) {
-  .tile:hover {
-    background: var(--color-tile-hover);
+  .soft:hover {
+    background: var(--color-ink);
+    color: var(--color-surface);
   }
   .solid:not(:disabled):hover {
     background: var(--color-ink-hover);

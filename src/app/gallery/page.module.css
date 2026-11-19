@@ -1,11 +1,11 @@
 .main {
   max-width: var(--content-max);
   margin: 0 auto;
-  padding: 56px var(--margin) 0;
+  padding: 96px var(--margin) 0;
 }
 
 .heading {
-  margin-bottom: 24px;
+  margin-bottom: 32px;
 }
 
 @media (max-width: 767px) {

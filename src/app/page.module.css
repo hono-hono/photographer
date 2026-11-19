@@ -1,21 +1,20 @@
-.main {
+/* MV の下。セクションの間は --section-gap（PC 120 / SP 72）でそろえる */
+.inner {
   max-width: var(--content-max);
   margin: 0 auto;
-  padding: 64px var(--margin) 0;
+  padding: 64px var(--margin) 0; /* 下の余白はフッターの margin-top（--section-gap）で取る */
+  display: flex;
+  flex-direction: column;
+  gap: var(--section-gap);
 }
 
 .more {
   display: flex;
   justify-content: center;
-  margin-top: 56px;
 }
 
 @media (max-width: 767px) {
-  .main {
-    padding-top: 24px;
-  }
-
-  .more {
-    margin-top: 40px;
+  .inner {
+    padding: 40px var(--margin) 0;
   }
 }

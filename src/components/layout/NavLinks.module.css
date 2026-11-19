@@ -1,6 +1,14 @@
 .list {
   display: flex;
-  gap: 40px;
+  gap: 32px;
+}
+
+/* 英語の横に小さく日本語を添える */
+.ja {
+  margin-left: 8px;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  opacity: 0.8;
 }
 
 .link {
@@ -8,8 +16,8 @@
   display: inline-block;
   padding: 12px 0 4px;
   font-size: 13px;
-  line-height: 1.4;
-  letter-spacing: 0.06em;
+  line-height: 1.5;
+  letter-spacing: 0.04em;
   color: var(--color-ink-soft);
   text-decoration: none;
   transition: color 0.3s var(--ease);

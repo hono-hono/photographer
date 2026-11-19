@@ -209,6 +209,18 @@ Kuroco の Admin MCP（claude.ai のコネクタ「Kuroco Admin」）から作�
 - **最大コンテンツ数 10** で11件目の追加を Kuroco が止める（設定はコンテンツ定義の編集画面。こちらの権限では変えられないため、管理画面で設定）
 - ビルドを止める条件: ちょうど10件でない、作品の未選択、選んだ作品が非公開・削除、同じ作品の重なり
 
+### 4.7 テーマのタグ（タグカテゴリ「Themes」ID 5。2026-11-19 作成）
+
+| 項目 | 使い方 |
+|---|---|
+| タグ名 `tag_nm` | 日本語名（例 廃墟） |
+| 拡張項目1 `ext_col_01` | 英語名（例 Ruins） |
+| 拡張項目2 `ext_col_02` | スラッグ（`/gallery?tag=` に使う。英小文字・数字・`-`） |
+| 並び順 | 大きいほど上 |
+
+- 作品 API（`works`）は `get_tag_flg` でタグを返す。サイトは Themes のタグだけを読み、スラッグに直して `Work.tags` に入れる
+- トップは `getThemes()`：テーマごとに新しい作品4枚（topics_id の大きい順）。作品のないテーマは出さない
+
 ### 4.5 API（エンドポイント）
 
 Kuroco の API は `https://{サイトキー}.g.kuroco.app/rcms-api/{API番号}/{パス}` の形になります。2つのAPIに分けます。
@@ -232,6 +244,7 @@ Kuroco の API は `https://{サイトキー}.g.kuroco.app/rcms-api/{API番号}/
 | 〃 | 〃 | 〃 | `GET /rcms-api/2/profile` | プロフィール（定義 9）を1件 |
 | 〃 | 〃 | 〃 | `GET /rcms-api/2/categories` | 作品のカテゴリ（定義 7）。Gallery のタブになる（2026-11-09 追加） |
 | 〃 | 〃 | 〃 | `GET /rcms-api/2/mainvisual` | MV（定義 10）を最大20件、topics_id の昇順（2026-11-18 追加） |
+| 〃 | 〃 | 〃 | `GET /rcms-api/2/tags` | タグカテゴリ Themes（ID 5）のタグ（2026-11-19 追加） |
 | hono contact | 3 | なし | `POST /rcms-api/3/contact` | フォーム ID 3 に送信。1時間に10回まで |
 
 - 呼び出し先の例: `https://hono-portfolio.g.kuroco.app/rcms-api/2/works`（ヘッダー `X-RCMS-API-ACCESS-TOKEN` にトークン）
@@ -315,9 +328,10 @@ export type AchievementGroup = { label: string; items: Achievement[] };
 
 | 部品 | 種類 | 役割 |
 |---|---|---|
-| `MainVisual` | クライアント | MVの10枚と `Lightbox` の開閉をまとめる |
+| `MainVisual` | クライアント | 画面幅いっぱいの MV。10枚を6秒ごとにフェードで切り替え（点で選べる。ホバー・フォーカス中・タブが裏・動きを減らす設定では止まる）。写真は `contain`。押すと `Lightbox` |
+| `Themes` / `TagGroup` | サーバー / クライアント | テーマごとに4枚（PC 1行・SP 2枚ずつ）と「すべて見る →」（`/gallery?tag=`）。押すと `Lightbox` |
 | `ProfileSection` / `AchievementList` | サーバー | Profile の配置と実績の行リスト |
-| `GalleryTabs` | クライアント | タブ、絞り込み、URLとの連動 |
+| `GalleryTabs` | クライアント | タブ、絞り込み、URLとの連動。`?tag=` があればテーマでも絞り、「# 名前 ×」で外す |
 | `WorkNav` | クライアント | 作品詳細の「← Gallery」と前後移動 |
 | `ContactSection` / `ContactForm` | サーバー / クライアント | 案内文とフォーム |
 

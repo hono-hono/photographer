@@ -1,0 +1,35 @@
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px 20px;
+}
+
+.heading {
+  font-family: var(--font-serif);
+  font-size: 24px;
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: 0.12em;
+}
+
+.sub {
+  font-size: 13px;
+  line-height: 1.6;
+  letter-spacing: 0.04em;
+  color: var(--color-label);
+}
+
+.groups {
+  margin-top: 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 64px;
+}
+
+@media (max-width: 767px) {
+  .groups {
+    margin-top: 32px;
+    gap: 48px;
+  }
+}

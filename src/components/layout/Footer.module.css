@@ -12,7 +12,7 @@
   align-items: center;
   font-size: 12px;
   line-height: 1.6;
-  color: var(--color-ink-soft);
+  color: var(--color-label);
 }
 
 .copy {
@@ -24,5 +24,6 @@
   align-items: center;
   min-height: 44px;
   letter-spacing: 0.04em;
-  color: var(--color-ink-soft);
+  color: var(--color-label);
+  text-decoration: none;
 }

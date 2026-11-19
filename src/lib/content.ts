@@ -2,7 +2,7 @@ import "server-only";
 import { readFileSync } from "node:fs";
 import path from "node:path";
 import type { CategoryDef } from "@/lib/categories";
-import type { AchievementGroup, Profile, SiteContent, Work } from "@/types/content";
+import type { AchievementGroup, Profile, SiteContent, ThemeTag, Work } from "@/types/content";
 
 /**
  * ページがデータを受け取る唯一の窓口。
@@ -50,4 +50,17 @@ export function getProfile(): Profile {
 
 export function getAchievements(): AchievementGroup[] {
   return load().achievements;
+}
+
+/** トップの Themes。タグと、そのタグの新しい作品（最大4件） */
+export function getThemes(): (ThemeTag & { works: Work[] })[] {
+  const works = load().works;
+  return (load().themes ?? []).map((t) => ({
+    ...t,
+    works: works.filter((w) => w.tags?.includes(t.slug)).slice(-4).reverse(),
+  }));
+}
+
+export function getThemeTags(): ThemeTag[] {
+  return load().themes ?? [];
 }

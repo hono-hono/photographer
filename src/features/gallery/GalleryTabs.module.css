@@ -1,21 +1,20 @@
 .tablist {
   display: flex;
   flex-wrap: wrap;
-  gap: 40px;
-  border-bottom: 1px solid var(--color-line);
+  gap: 8px 40px;
 }
 
 .tab {
   position: relative;
   min-height: 44px;
-  margin-bottom: -1px;
-  padding: 0 2px;
+  padding: 12px 0 8px;
   background: none;
   border: none;
   border-bottom: 1px solid transparent;
   font-size: 13px;
-  letter-spacing: 0.06em;
-  color: var(--color-ink-soft);
+  line-height: 1.5;
+  letter-spacing: 0.04em;
+  color: var(--color-label);
 }
 
 .tab[aria-selected="true"] {
@@ -25,12 +24,12 @@
 
 @media (hover: hover) {
   .tab:hover {
-    color: var(--color-ink);
+    color: var(--color-ink-soft);
   }
 }
 
 .panel {
-  margin-top: 32px;
+  margin-top: 48px;
 }
 
 /* URL を読み終えるまで隠す（一瞬 All が見えるのを防ぐ。高さは保つ） */
@@ -45,10 +44,62 @@
 
 @media (max-width: 767px) {
   .tablist {
-    gap: 20px;
+    gap: 8px 24px;
   }
 
   .panel {
-    margin-top: 24px;
+    margin-top: 32px;
   }
+}
+
+/* テーマ（タグ）で絞り込んでいるときの表示。押すと絞り込みを外す */
+.tagBar {
+  margin-top: 24px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+}
+
+.tagLabel {
+  font-size: 12px;
+  line-height: 1.6;
+  letter-spacing: 0.04em;
+  color: var(--color-label);
+}
+
+.tagChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  min-height: 36px;
+  padding: 0 14px;
+  border: 1px solid var(--color-line);
+  border-radius: 999px;
+  background: var(--color-surface);
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  color: var(--color-ink);
+  transition: border-color 0.3s var(--ease);
+}
+
+.tagClear {
+  margin-left: 10px;
+  font-size: 14px;
+  color: var(--color-label);
+}
+
+.tagChip:focus-visible {
+  outline: 2px solid var(--color-ink);
+  outline-offset: 2px;
+}
+
+@media (hover: hover) {
+  .tagChip:hover {
+    border-color: var(--color-ink);
+  }
+}
+
+.tagBar + .panel {
+  margin-top: 32px;
 }
