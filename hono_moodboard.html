@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>hono — Moodboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;500&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F7F7F6;
+    --panel:#FFFFFF;
+    --ink:#1C1C1A;
+    --ink-soft:#4A4A47;
+    --line:#D9D9D6;
+    --muted:#8C8C89;
+    --g1:#1C1C1A; --g2:#4A4A47; --g3:#8C8C89; --g4:#B8B6B0; --g5:#D9D9D6; --g6:#F1F1EF;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Noto Sans JP', sans-serif;
+  }
+  .board{
+    max-width:1200px;
+    margin:0 auto;
+    padding:56px clamp(20px,5vw,56px) 80px;
+  }
+  header.top{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    border-bottom:1px solid var(--line);
+    padding-bottom:24px;
+    margin-bottom:40px;
+  }
+  header.top .logo{
+    font-family:'Noto Serif JP', serif;
+    font-size:22px;
+    letter-spacing:0.14em;
+  }
+  header.top .sub{
+    font-size:12px;
+    color:var(--muted);
+    letter-spacing:0.08em;
+  }
+
+  .section{ margin-bottom:56px; }
+  .section h2{
+    font-family:'Noto Serif JP', serif;
+    font-weight:500;
+    font-size:15px;
+    letter-spacing:0.12em;
+    color:var(--ink);
+    margin:0 0 20px;
+    padding-bottom:10px;
+    border-bottom:1px solid var(--line);
+  }
+
+  /* コンセプトキーワード */
+  .keywords{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+  }
+  .keywords span{
+    font-size:13px;
+    color:var(--ink-soft);
+    border:1px solid var(--line);
+    padding:8px 16px;
+    border-radius:999px;
+  }
+
+  /* カラー */
+  .palette{ display:flex; gap:8px; }
+  .swatch{ flex:1; text-align:center; }
+  .swatch .chip{ height:64px; border:1px solid var(--line); }
+  .swatch p{ font-size:11px; color:var(--ink-soft); margin:6px 0 0; }
+
+  /* タイポグラフィ */
+  .type-sample{
+    background:var(--panel);
+    border:1px solid var(--line);
+    padding:32px;
+  }
+  .type-sample .h{
+    font-family:'Noto Serif JP', serif;
+    font-size:34px;
+    letter-spacing:0.1em;
+    margin:0 0 6px;
+  }
+  .type-sample .s{
+    font-family:'Noto Serif JP', serif;
+    font-size:13px;
+    letter-spacing:0.14em;
+    color:var(--muted);
+    margin:0 0 20px;
+  }
+  .type-sample .b{
+    font-size:14px;
+    line-height:1.9;
+    max-width:520px;
+    margin:0 0 16px;
+  }
+  .type-sample .label{
+    font-size:11px;
+    color:var(--muted);
+    letter-spacing:0.06em;
+  }
+
+  /* レイアウト原則 */
+  .principles{
+    display:grid;
+    grid-template-columns:repeat(2, 1fr);
+    gap:1px;
+    background:var(--line);
+    border:1px solid var(--line);
+  }
+  .principle{
+    background:var(--panel);
+    padding:22px 24px;
+  }
+  .principle h3{
+    font-size:13px;
+    font-weight:500;
+    margin:0 0 8px;
+  }
+  .principle p{
+    font-size:13px;
+    line-height:1.8;
+    color:var(--ink-soft);
+    margin:0;
+  }
+
+  /* レイアウト参照(スタックMV再掲) */
+  .layout-ref{
+    display:flex;
+    gap:32px;
+    align-items:center;
+    flex-wrap:wrap;
+  }
+  .mini-stack{
+    position:relative;
+    width:160px;
+    aspect-ratio:4/5;
+  }
+  .mini-plate{
+    position:absolute;
+    inset:-12px -20px -8px -20px;
+    background:var(--g6);
+    border-radius:16px;
+  }
+  .mini-layer{
+    position:absolute;
+    inset:0;
+    background:var(--g4);
+    box-shadow:0 1px 3px rgba(0,0,0,.08);
+  }
+  .mini-layer:nth-child(3){ background:var(--g3); transform:translate(-18px,10px) rotate(-10deg); }
+  .mini-layer:nth-child(4){ background:var(--g5); transform:translate(12px,8px) rotate(9deg); }
+  .mini-layer:nth-child(5){ transform:none; }
+  .layout-ref .note{ flex:1; min-width:220px; font-size:13px; line-height:1.9; color:var(--ink-soft); }
+
+  footer.bottom{
+    margin-top:40px;
+    font-size:11px;
+    color:var(--muted);
+    text-align:center;
+  }
+</style>
+</head>
+<body>
+
+<div class="board">
+
+  <header class="top">
+    <span class="logo">hono</span>
+    <span class="sub">Moodboard — Concept &amp; Tone</span>
+  </header>
+
+  <section class="section">
+    <h2>コンセプト</h2>
+    <div class="keywords">
+      <span>静かに、しかし機能的に</span>
+      <span>シンプルで長く使える</span>
+      <span>装飾より作品</span>
+      <span>北欧的な落ち着き</span>
+      <span>無印・ユニクロ的な機能美</span>
+      <span>柔らかいのに努力家</span>
+      <span>一見主張がない、実は緻密</span>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>配色 — 無彩色のみ</h2>
+    <div class="palette">
+      <div class="swatch"><div class="chip" style="background:var(--g1)"></div><p>#1C1C1A</p></div>
+      <div class="swatch"><div class="chip" style="background:var(--g2)"></div><p>#4A4A47</p></div>
+      <div class="swatch"><div class="chip" style="background:var(--g3)"></div><p>#8C8C89</p></div>
+      <div class="swatch"><div class="chip" style="background:var(--g4)"></div><p>#B8B6B0</p></div>
+      <div class="swatch"><div class="chip" style="background:var(--g5)"></div><p>#D9D9D6</p></div>
+      <div class="swatch"><div class="chip" style="background:var(--g6); border:1px solid var(--line);"></div><p>#F1F1EF</p></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>タイポグラフィ — Noto Serif JP × Noto Sans JP</h2>
+    <div class="type-sample">
+      <p class="h">静かな時間の記録</p>
+      <p class="s">Works — 2021</p>
+      <p class="b">人がいた痕跡や、その場所で営まれていた暮らしを想像できる風景に惹かれています。派手な絶景を撮ることよりも、その場所に残された空気や物語を記録することを大切にしています。</p>
+      <p class="label">見出し: Noto Serif JP / 本文: Noto Sans JP(レギュラー〜ミディアム)</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>レイアウトの考え方</h2>
+    <div class="layout-ref">
+      <div class="mini-stack">
+        <div class="mini-plate"></div>
+        <div class="mini-layer"></div>
+        <div class="mini-layer"></div>
+        <div class="mini-layer"></div>
+      </div>
+      <p class="note">Homeのメインビジュアルは、過去の作品が重なって積まれている「スタック」表現。写真自体は角丸にせず直角のまま、背後の台紙にだけ丸みを持たせる。柔らかさは写真ではなく、かたち(台紙・UI要素)で表現する。</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>原則</h2>
+    <div class="principles">
+      <div class="principle">
+        <h3>作品が常に主役</h3>
+        <p>ホバー時の演出は最小限。写真の色や情報を邪魔しない。</p>
+      </div>
+      <div class="principle">
+        <h3>動きは一箇所に絞る</h3>
+        <p>ページ全体に演出を散らさず、意味のある一箇所だけに動きを使う。</p>
+      </div>
+      <div class="principle">
+        <h3>余白で静けさを作る</h3>
+        <p>一般的なポートフォリオサイトより広めの余白を基準にする。</p>
+      </div>
+      <div class="principle">
+        <h3>機能性を犠牲にしない</h3>
+        <p>静かさを理由に、共有性・拡張性などの実務的な機能は削らない。</p>
+      </div>
+    </div>
+  </section>
+
+  <footer class="bottom">このボードはFigmaへの取り込み用の参考資料です。スクリーンショットして貼り付けてください。</footer>
+
+</div>
+
+</body>
+</html>
